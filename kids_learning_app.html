@@ -1,1158 +1,1146 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#4F46E5">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>সোনামণির পাঠশালা - 3D Premium Kids Learning App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#4F46E5" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>সোনামণির পাঠশালা - শিশুদের বাংলা শেখার খেলা</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet" />
 
-    <style>
-        * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
-        body {
-            font-family: 'Hind Siliguri', 'Fredoka', sans-serif;
-            background: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #ede9fe 45%, #fef3c7 100%);
-            overflow-x: hidden;
-            color: #1e1b4b;
-        }
-        .font-eng { font-family: 'Fredoka', sans-serif; }
+  <style>
+    :root {
+      --bg1: #dbeafe;
+      --bg2: #ede9fe;
+      --bg3: #fef3c7;
+      --purple: #4f46e5;
+      --purple-dark: #312e81;
+      --pink: #f472b6;
+      --pink-2: #fb7185;
+      --sky: #7dd3fc;
+      --green: #4ade80;
+      --green-dark: #166534;
+      --orange: #fb923c;
+      --yellow: #facc15;
+      --red: #ef4444;
+      --white: #fff;
+      --text: #1e1b4b;
+      --muted: #4b5563;
+      --shadow: rgba(79, 70, 229, 0.15);
+    }
 
-        .premium-card {
-            position: relative;
-            border-radius: 2rem;
-            background: rgba(255,255,255,0.92);
-            border: 4px solid #ffffff;
-            box-shadow: 0 12px 0 rgba(30,27,75,0.14), 0 20px 30px rgba(30,27,75,0.10), inset 0 2px 6px rgba(255,255,255,0.9);
-            transition: all 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
-            overflow: hidden;
-        }
-        .premium-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 16px 0 rgba(30,27,75,0.16), 0 26px 38px rgba(30,27,75,0.15), inset 0 2px 8px rgba(255,255,255,1); }
-        .premium-card:active { transform: translateY(6px) scale(0.97); box-shadow: 0 4px 0 rgba(30,27,75,0.14), 0 8px 14px rgba(30,27,75,0.08); }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
 
-        .diorama-stage {
-            background: radial-gradient(circle at 50% 25%, #ffffff 0%, #e0f2fe 70%, #bae6fd 100%);
-            border-radius: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 4px 12px rgba(15,23,42,0.08);
-            border: 3px solid rgba(255,255,255,0.95);
-        }
-        .diorama-stage::before {
-            content: '';
-            position: absolute; bottom: -8%; left: -10%; right: -10%; height: 36%;
-            background: linear-gradient(180deg, #86efac 0%, #22c55e 100%);
-            border-radius: 50% 50% 0 0; box-shadow: inset 0 3px 6px rgba(255,255,255,0.5); pointer-events: none;
-        }
-        .toy-btn { transition: all 0.16s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 6px 0 rgba(15,23,42,0.2), 0 8px 15px rgba(15,23,42,0.1); }
-        .toy-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(15,23,42,0.2); }
+    html, body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      font-family: 'Hind Siliguri', 'Fredoka', sans-serif;
+      background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 42%, var(--bg3) 100%);
+      color: var(--text);
+      overflow-x: hidden;
+    }
 
-        @keyframes rigFloat { 0%,100%{transform:translateY(0px) rotate(0deg) scale(1)} 50%{transform:translateY(-9px) rotate(2.5deg) scale(1.04)} }
-        @keyframes rigHop { 0%,100%{transform:translateY(0) scale(1,1)} 35%{transform:translateY(-14px) scale(0.94,1.07) rotate(-3deg)} 65%{transform:translateY(0) scale(1.06,0.94)} }
-        @keyframes rigSlither { 0%,100%{transform:translateX(-5px) scale(1.03) rotate(-3deg)} 50%{transform:translateX(6px) scale(0.98) rotate(3deg)} }
-        @keyframes rigFlap { 0%,100%{transform:translateY(0px) rotate(-4deg) scale(1)} 50%{transform:translateY(-12px) rotate(5deg) scale(1.06)} }
-        @keyframes rigSwim { 0%,100%{transform:translateX(-7px) translateY(0px) rotate(-4deg)} 50%{transform:translateX(7px) translateY(-5px) rotate(4deg)} }
-        @keyframes speakingWave { 0%,100%{transform:scaleY(0.35)} 50%{transform:scaleY(1.3)} }
-        @keyframes popBurst { 0%{transform:scale(0.5);opacity:0} 50%{transform:scale(1.2);opacity:1} 100%{transform:scale(1) translateY(-25px);opacity:0} }
-        @keyframes balloonRise { 0%{transform:translateY(105vh) scale(0.75); opacity:1} 100%{transform:translateY(-20vh) scale(1.15); opacity:0} }
+    body {
+      position: relative;
+    }
 
-        .rig-float { animation: rigFloat 2.6s ease-in-out infinite; }
-        .rig-hop { animation: rigHop 1.9s ease-in-out infinite; }
-        .rig-slither { animation: rigSlither 2.1s ease-in-out infinite; }
-        .rig-flap { animation: rigFlap 1.7s ease-in-out infinite; }
-        .rig-swim { animation: rigSwim 2.3s ease-in-out infinite; }
-        .animate-burst { animation: popBurst 0.85s ease-out forwards; }
-    </style>
+    .font-eng {
+      font-family: 'Fredoka', sans-serif;
+    }
+
+    .app-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 14px 70px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      border: 3px solid rgba(255,255,255,0.8);
+      border-radius: 24px;
+      background: rgba(255,255,255,0.75);
+      box-shadow: 0 16px 35px rgba(79, 70, 229, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 12px 20px rgba(79,70,229,0.35);
+    }
+
+    .brand h1 {
+      font-size: clamp(1.15rem, 2vw, 1.7rem);
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      margin-top: -2px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #ecfeff, #fdf2f8);
+      border: 2px solid rgba(255,255,255,0.9);
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 10px 14px;
+      box-shadow: 0 10px 18px rgba(14, 116, 144, 0.08);
+    }
+
+    .hero {
+      position: relative;
+      border-radius: 34px;
+      padding: 20px 18px 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.7));
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: 0 20px 40px rgba(79, 70, 229, 0.10);
+      overflow: hidden;
+    }
+
+    .clouds, .clouds::before, .clouds::after {
+      position: absolute;
+      background: rgba(255,255,255,0.6);
+      border-radius: 999px;
+      filter: blur(6px);
+      content: '';
+      animation: floatCloud 8s ease-in-out infinite alternate;
+    }
+
+    .clouds {
+      width: 120px; height: 36px; top: 26px; right: 8%;
+    }
+
+    .clouds::before {
+      width: 54px; height: 28px; top: -14px; left: 18px;
+      animation-delay: 0.4s;
+    }
+
+    .clouds::after {
+      width: 60px; height: 30px; top: -12px; right: 16px;
+      animation-delay: 1.2s;
+    }
+
+    @keyframes floatCloud {
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(-10px) translateY(8px); }
+    }
+
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 20px;
+      align-items: center;
+      z-index: 1;
+    }
+
+    .headline {
+      padding: 12px 8px 8px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #dbeafe, #fdf2f8);
+      border: 2px solid rgba(255,255,255,0.8);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--purple-dark);
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      color: var(--purple-dark);
+    }
+
+    .highlight {
+      color: var(--pink-2);
+      text-shadow: 0 8px 25px rgba(251, 113, 133, 0.18);
+    }
+
+    .subtext {
+      max-width: 610px;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--muted);
+    }
+
+    .cta-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+      margin-bottom: 14px;
+    }
+
+    .main-btn, .sec-btn, .mini-btn {
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.2s ease;
+      font-weight: 700;
+    }
+
+    .main-btn:active, .sec-btn:active, .mini-btn:active {
+      transform: scale(0.98);
+    }
+
+    .main-btn {
+      padding: 14px 22px;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      box-shadow: 0 14px 30px rgba(79, 70, 229, 0.25);
+    }
+
+    .sec-btn {
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #ecfeff, #fdf2f8);
+      color: var(--purple-dark);
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 10px 20px rgba(79,70,229,0.08);
+    }
+
+    .mini-btn {
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.85);
+      color: var(--purple-dark);
+      border: 2px solid rgba(255,255,255,0.9);
+    }
+
+    .snakeside {
+      display: grid;
+      place-items: center;
+      padding: 18px 12px 6px;
+      position: relative;
+      min-height: 320px;
+    }
+
+    .snake-scene {
+      position: relative;
+      width: min(100%, 340px);
+      height: 300px;
+      border-radius: 32px;
+      background: linear-gradient(180deg, #dbeafe, #d9f99d 72%, #86efac 100%);
+      border: 3px solid rgba(255,255,255,0.8);
+      box-shadow: inset 0 4px 12px rgba(255,255,255,0.6), 0 18px 30px rgba(34, 197, 94, 0.12);
+      overflow: hidden;
+    }
+
+    .scene-sun {
+      position: absolute;
+      width: 68px; height: 68px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fffef0, #fbbf24 55%, #f59e0b 100%);
+      right: 28px; top: 24px;
+      box-shadow: 0 0 0 10px rgba(250, 204, 21, 0.18), 0 10px 25px rgba(245, 158, 11, 0.18);
+      animation: pulseSun 2.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseSun {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    .grass {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 28%;
+      background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
+    }
+
+    .grass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(90deg, rgba(255,255,255,0.1) 0 2px, transparent 2px 100%);
+      background-size: 52px 100%;
+      opacity: 0.38;
+    }
+
+    .snake-wrap {
+      position: absolute;
+      left: 12%;
+      right: 10%;
+      bottom: 54px;
+      height: 170px;
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .snake-wrap:active {
+      transform: scale(0.98);
+    }
+
+    .snake-body {
+      position: absolute;
+      left: 10%;
+      bottom: 18px;
+      width: 230px;
+      height: 78px;
+      border-radius: 60px 50px 28px 36px;
+      background: linear-gradient(90deg, #22c55e, #16a34a 45%, #15803d 100%);
+      box-shadow: inset -8px -10px 0 rgba(0, 0, 0, 0.08), 0 8px 18px rgba(22, 163, 74, 0.22);
+      transform-origin: left center;
+      animation: slither 2.8s ease-in-out infinite alternate;
+      overflow: visible;
+    }
+
+    .snake-body::before, .snake-body::after {
+      content: '';
+      position: absolute;
+      width: 64px; height: 34px;
+      border-radius: 26px;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      top: 18px;
+      box-shadow: inset -6px -6px 0 rgba(0,0,0,0.06);
+    }
+
+    .snake-body::before {
+      left: 44px;
+      transform: rotate(14deg);
+    }
+
+    .snake-body::after {
+      left: 110px;
+      transform: rotate(-16deg);
+    }
+
+    .snake-head {
+      position: absolute;
+      left: 202px;
+      bottom: 40px;
+      width: 72px;
+      height: 54px;
+      border-radius: 50% 55% 45% 40%;
+      background: linear-gradient(145deg, #22c55e 0%, #15803d 100%);
+      box-shadow: inset -10px -10px 0 rgba(0,0,0,0.08), 0 10px 20px rgba(34,197,94,0.2);
+      transform-origin: center;
+      animation: headMove 1.8s ease-in-out infinite alternate;
+      transition: transform 0.25s ease, filter 0.25s ease;
+      z-index: 2;
+    }
+
+    .snake-head::before {
+      content: '';
+      position: absolute;
+      width: 12px; height: 12px;
+      background: #111827;
+      border-radius: 50%;
+      top: 18px; left: 12px; box-shadow: 24px 0 0 #111827;
+    }
+
+    .snake-head::after {
+      content: '';
+      position: absolute;
+      width: 20px; height: 20px;
+      right: 8px; top: 18px;
+      border-radius: 50% 50% 50% 0;
+      background: linear-gradient(135deg, #fca5a5, #f87171);
+      transform: rotate(42deg);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.24);
+    }
+
+    @keyframes headMove {
+      0% { transform: rotate(-2deg) translateY(0); }
+      100% { transform: rotate(4deg) translateY(-2px); }
+    }
+
+    @keyframes slither {
+      0% { transform: translateX(0) rotate(0deg); }
+      50% { transform: translateX(12px) rotate(3deg); }
+      100% { transform: translateX(-8px) rotate(-3deg); }
+    }
+
+    .snake-wrap.scared .snake-body {
+      animation: none;
+      transform: translateX(-25px) rotate(-8deg) scaleX(0.96);
+    }
+
+    .snake-wrap.scared .snake-head {
+      transform: translateX(-32px) rotate(-22deg) scale(1.04);
+      filter: drop-shadow(0 0 0 rgba(0,0,0,0));
+    }
+
+    .snake-wrap.scared .tongue {
+      opacity: 1;
+      transform: translateX(-20px) scaleY(1);
+    }
+
+    .tongue {
+      position: absolute;
+      left: 258px; bottom: 82px;
+      width: 50px; height: 10px;
+      background: linear-gradient(90deg, #fca5a5, #ef4444);
+      border-radius: 10px;
+      transform-origin: left center;
+      transform: rotate(-12deg) scaleX(0.7);
+      opacity: 0.85;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      z-index: 3;
+    }
+
+    .tongue::after {
+      content: '';
+      position: absolute;
+      right: -10px; top: 3px;
+      width: 12px; height: 4px; border-radius: 999px;
+      background: #fca5a5;
+    }
+
+    .speech-bubble {
+      position: absolute;
+      left: 35px; top: 22px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 18px;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 10px 18px rgba(30, 27, 75, 0.08);
+      font-weight: 700;
+      color: var(--purple-dark);
+      animation: popIn 0.8s ease;
+      max-width: 150px;
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      left: 26px; bottom: -10px;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 12px solid rgba(255,255,255,0.92);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      padding: 16px 10px;
+      background: rgba(255,255,255,0.75);
+      border: 2px solid rgba(255,255,255,0.85);
+      border-radius: 22px;
+      box-shadow: 0 12px 18px rgba(14,116,144,0.08);
+      text-align: center;
+    }
+
+    .stat-card .num {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--purple-dark);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-card .label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 12px 8px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h3 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2vw, 2rem);
+      color: var(--purple-dark);
+    }
+
+    .tag {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #fef3c7;
+      color: #92400e;
+      border: 2px solid rgba(255,255,255,0.9);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .lesson-card {
+      position: relative;
+      padding: 16px 14px 12px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.78);
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: 0 14px 26px rgba(79, 70, 229, 0.08);
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.2s ease;
+      overflow: hidden;
+    }
+
+    .lesson-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 30px rgba(79, 70, 229, 0.12);
+    }
+
+    .lesson-card.active {
+      background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+      border-color: rgba(79, 70, 229, 0.18);
+    }
+
+    .letter-bubble {
+      width: 58px; height: 58px; display: grid; place-items: center;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #c7d2fe, #f5d0fe);
+      font-weight: 800; font-size: 1.8rem; color: var(--purple-dark);
+      margin-bottom: 10px;
+      box-shadow: inset 0 2px 3px rgba(255,255,255,0.6);
+    }
+
+    .lesson-card .word {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--purple-dark);
+      margin: 0;
+    }
+
+    .lesson-card .phrase {
+      margin: 2px 0 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .lesson-card .play-bar {
+      position: absolute; right: 10px; top: 12px;
+      width: 42px; height: 42px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, #facc15, #f59e0b);
+      color: var(--purple-dark);
+      box-shadow: 0 8px 18px rgba(245, 158, 11, 0.25);
+      font-size: 1.1rem;
+    }
+
+    .focus-panel {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.78);
+      border: 3px solid rgba(255,255,255,0.9);
+      border-radius: 28px;
+      padding: 18px 16px 16px;
+      box-shadow: 0 14px 28px rgba(79,70,229,0.08);
+    }
+
+    .teacher-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .teacher-avatar {
+      width: 72px; height: 72px; border-radius: 22px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, #bfdbfe, #f9a8d4);
+      font-size: 2.2rem;
+      box-shadow: inset 0 2px 5px rgba(255,255,255,0.7);
+    }
+
+    .teacher-box h4 {
+      margin: 0;
+      color: var(--purple-dark);
+      font-size: 1.2rem;
+    }
+
+    .teacher-box p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .pronounce-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .sound-chip {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ecfeff, #f0fdf4);
+      border: 2px solid rgba(255,255,255,0.9);
+      color: var(--purple-dark);
+      font-weight: 700;
+    }
+
+    .challenge-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    .challenge-card {
+      padding: 14px 12px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #f5f3ff, #fef3c7);
+      border: 2px solid rgba(255,255,255,0.8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .challenge-card strong {
+      display: block; color: var(--purple-dark); font-size: 1rem;
+    }
+
+    .challenge-card span {
+      color: var(--muted); font-size: 0.8rem;
+    }
+
+    .reward-track {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .star-badges {
+      display: flex; gap: 6px; align-items: center;
+    }
+
+    .star {
+      width: 28px; height: 28px; display: grid; place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fef3c7, #facc15);
+      font-size: 0.9rem;
+      box-shadow: 0 8px 18px rgba(250, 204, 21, 0.16);
+    }
+
+    .progress {
+      width: 100%; height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; margin-top: 14px; border: 2px solid rgba(255,255,255,0.9);
+    }
+
+    .progress-bar {
+      height: 100%; width: 58%; border-radius: inherit; background: linear-gradient(90deg, #34d399, #22c55e, #84cc16);
+    }
+
+    .game-area {
+      margin-top: 20px;
+      padding: 20px 16px 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(240,253,250,0.7));
+      border-radius: 32px;
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: 0 16px 28px rgba(16,185,129,0.08);
+    }
+
+    .game-head {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+
+    .game-head h3 { margin: 0; color: var(--purple-dark); font-size: clamp(1.3rem, 2vw, 1.75rem); }
+
+    .interaction-zone {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .game-btns {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-top: 14px;
+    }
+
+    .snake-stage {
+      position: relative;
+      min-height: 300px;
+      background: linear-gradient(180deg, #e0f2fe 0%, #cffafe 36%, #bbf7d0 100%);
+      border-radius: 28px;
+      border: 3px solid rgba(255,255,255,0.8);
+      overflow: hidden;
+      box-shadow: inset 0 5px 12px rgba(255,255,255,0.7);
+    }
+
+    .snake-stage::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.6), transparent 55%);
+    }
+
+    .snake-game-wrap {
+      position: absolute; inset: 0;
+      display: flex;
+      align-items: flex-end; justify-content: center;
+      padding: 8px;
+    }
+
+    .snake-game-wrap .snake-body {
+      left: 8%; width: 280px; height: 92px; bottom: 42px;
+    }
+
+    .snake-game-wrap .snake-head {
+      left: 220px; width: 82px; height: 62px; bottom: 54px;
+    }
+
+    .snake-game-wrap .tongue {
+      left: 286px; bottom: 90px;
+    }
+
+    .snake-cursor {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+
+    .hand-hit {
+      position: absolute;
+      right: 32px; bottom: 16px;
+      width: 82px; height: 82px; border-radius: 50%;
+      background: radial-gradient(circle at 28% 25%, #fff7ed, #fdba74 65%, #f97316 100%);
+      box-shadow: 0 14px 18px rgba(249,115,22,0.22);
+      display: grid; place-items: center;
+      font-size: 2rem;
+      animation: handBob 1.8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes handBob {
+      0% { transform: rotate(-6deg) translateY(0px); }
+      100% { transform: rotate(7deg) translateY(-10px); }
+    }
+
+    .game-note {
+      display: flex; flex-direction: column; gap: 10px; justify-content: center;
+      min-height: 260px;
+      padding: 8px 8px 0;
+    }
+
+    .note-box {
+      border-radius: 18px;
+      background: rgba(255,255,255,0.8);
+      border: 2px solid rgba(255,255,255,0.9);
+      padding: 12px 12px;
+      color: var(--purple-dark);
+      box-shadow: 0 12px 18px rgba(79,70,229,0.08);
+    }
+
+    .note-box strong { font-size: 1.05rem; }
+
+    .note-box small { display: block; color: var(--muted); margin-top: 3px; }
+
+    .speaker {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 54px; height: 54px; border-radius: 18px; background: linear-gradient(135deg, #dbeafe, #f5d0fe);
+      border: 2px solid rgba(255,255,255,0.9); font-size: 1.4rem; cursor: pointer;
+    }
+
+    .floating-spark {
+      position: absolute;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 0 8px rgba(255,255,255,0.18);
+      animation: sparkle 1.05s ease-in-out infinite alternate;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0.75); opacity: 0.3; }
+      100% { transform: scale(1.35); opacity: 1; }
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .focus-panel, .interaction-zone {
+        grid-template-columns: 1fr;
+      }
+      .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .app-shell { padding-top: 12px; }
+    }
+
+    @media (max-width: 560px) {
+      .topbar { padding: 12px 12px; }
+      .brand { gap: 9px; }
+      .brand-badge { width: 40px; height: 40px; border-radius: 12px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr; }
+      .cta-wrap { flex-direction: column; }
+      .main-btn, .sec-btn { width: 100%; }
+      .game-btns { flex-direction: column; }
+      .game-btns .mini-btn { width: 100%; }
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between pb-28 relative">
-    <div id="celebration-layer" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
-
-    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b-4 border-indigo-200 px-3 py-2.5 shadow-sm">
-        <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
-            <div class="flex items-center gap-3">
-                <div onclick="triggerCelebration()" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-500 to-pink-500 p-0.5 shadow-lg cursor-pointer active:scale-90 transition">
-                    <div class="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-                        <svg viewBox="0 0 64 64" class="w-10 h-10">
-                            <defs>
-                                <radialGradient id="mascotG" cx="35%" cy="30%" r="70%">
-                                    <stop offset="0%" stop-color="#fde047"/>
-                                    <stop offset="60%" stop-color="#f59e0b"/>
-                                    <stop offset="100%" stop-color="#b45309"/>
-                                </radialGradient>
-                            </defs>
-                            <circle cx="32" cy="34" r="22" fill="url(#mascotG)"/>
-                            <circle cx="16" cy="18" r="9" fill="url(#mascotG)"/>
-                            <circle cx="48" cy="18" r="9" fill="url(#mascotG)"/>
-                            <circle cx="24" cy="31" r="4" fill="#1e1b4b"/>
-                            <circle cx="40" cy="31" r="4" fill="#1e1b4b"/>
-                            <circle cx="23" cy="29.5" r="1.5" fill="#fff"/>
-                            <circle cx="39" cy="29.5" r="1.5" fill="#fff"/>
-                            <ellipse cx="32" cy="37" rx="5" ry="3.5" fill="#78350f"/>
-                            <path d="M25 43 Q32 49 39 43" stroke="#78350f" stroke-width="3" fill="none" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-lg sm:text-2xl font-extrabold bg-gradient-to-r from-indigo-700 via-purple-600 to-rose-600 bg-clip-text text-transparent">সোনামণির পাঠশালা</h1>
-                        <span class="hidden sm:inline-block text-[11px] font-extrabold uppercase tracking-wider bg-indigo-100 text-indigo-700 px-2.5 py-0.5 rounded-full border border-indigo-300">3D Edition</span>
-                    </div>
-                    <p class="text-xs text-slate-500 font-bold">খেলতে খেলতে বাংলা, English ও সংখ্যা শিখি</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <button onclick="testPureBanglaVoice()" class="toy-btn flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white border-2 border-emerald-700 text-xs sm:text-sm font-bold" title="শুদ্ধ বাংলা কণ্ঠ পরীক্ষা করুন">
-                    <span>🔊</span>
-                    <span class="hidden md:inline">শুদ্ধ বাংলা কণ্ঠ</span>
-                </button>
-
-                <button id="parent-mode-btn" onclick="toggleParentMode()" class="toy-btn flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-xs sm:text-sm font-bold text-slate-700">
-                    <span>🎙️</span>
-                    <span class="hidden sm:inline">মা-বাবার কণ্ঠ</span>
-                </button>
-
-                <button onclick="triggerCelebration()" class="toy-btn flex items-center gap-1.5 bg-gradient-to-r from-amber-300 to-yellow-400 border-2 border-amber-500 px-3.5 py-1.5 rounded-2xl">
-                    <svg viewBox="0 0 36 36" class="w-6 h-6">
-                        <polygon points="18,2 23,13 35,14 26,22 29,34 18,28 7,34 10,22 1,14 13,13" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
-                    </svg>
-                    <span id="star-count" class="font-eng text-lg sm:text-xl font-extrabold text-amber-950">0</span>
-                </button>
-            </div>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">📘</div>
+        <div>
+          <h1>সোনামণির পাঠশালা</h1>
+          <small>শিশুদ��র বাংলা শেখার খেলা</small>
         </div>
-
-        <div id="parent-banner" class="hidden max-w-6xl mx-auto mt-2 bg-rose-50 border-2 border-rose-300 rounded-2xl p-2.5 text-xs sm:text-sm text-rose-900 flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-                <span class="font-bold">🎙️ মা-বাবার ভয়েস রেকর্ড মোড চালু:</span>
-                <span>যেকোনো কার্ডে <b>"রেকর্ড"</b> বাটনে চাপ দিয়ে আপনার নিজের গলায় উচ্চারণ সেভ করুন।</span>
-            </div>
-            <button onclick="clearAllCustomVoices()" class="px-3 py-1 rounded-xl bg-white border border-rose-300 text-rose-700 font-bold hover:bg-rose-100">সব রেকর্ড মুছুন</button>
-        </div>
+      </div>
+      <div class="pill">⭐ ৩৬টি ছোট পাঠ</div>
     </header>
 
-    <main class="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-5 pt-4 relative z-10">
-        <div id="sub-controls" class="mb-5"></div>
-        <div id="content-area" class="transition-all duration-300"></div>
-    </main>
-
-    <div id="card-modal" onclick="closeModal(event)" class="fixed inset-0 bg-indigo-950/70 backdrop-blur-md z-40 hidden items-center justify-center p-3 sm:p-5">
-        <div onclick="event.stopPropagation()" id="modal-box" class="bg-gradient-to-b from-indigo-50 via-white to-emerald-50 border-8 border-white rounded-[2.6rem] max-w-xl w-full p-4 sm:p-6 text-center shadow-2xl relative overflow-hidden">
-            <button onclick="closeModal()" class="toy-btn absolute top-3 right-3 w-11 h-11 rounded-full bg-rose-500 text-white text-xl font-extrabold border-4 border-white flex items-center justify-center z-30">✕</button>
-
-            <div id="modal-stage-container" class="diorama-stage rounded-[2rem] border-4 border-indigo-100 p-2 my-1 relative select-none overflow-hidden">
-                <div id="modal-game-prompt" class="inline-flex items-center gap-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-xs sm:text-sm font-extrabold px-4 py-1.5 rounded-full shadow-md mb-1 z-20 relative border-2 border-white">👆 ৩ডি চরিত্রটিতে ট্যাপ করো অথবা আঙুল দিয়ে ঘুরাও!</div>
-                <div id="modal-visual" class="w-full h-60 sm:h-72 mx-auto flex items-center justify-center relative z-10 cursor-grab active:cursor-grabbing rounded-2xl overflow-hidden"></div>
-                <div id="modal-action-feedback" class="h-6 mt-1 text-xs sm:text-sm font-extrabold text-emerald-800 relative z-20"></div>
-            </div>
-
-            <div id="modal-voice-wave" class="flex items-center justify-center gap-1.5 h-6 my-1 opacity-0 transition-opacity">
-                <span class="w-1.5 h-4 bg-rose-500 rounded-full" style="animation: speakingWave 0.5s infinite 0.1s"></span>
-                <span class="w-1.5 h-6 bg-amber-500 rounded-full" style="animation: speakingWave 0.5s infinite 0.2s"></span>
-                <span class="w-1.5 h-5 bg-emerald-500 rounded-full" style="animation: speakingWave 0.5s infinite 0.3s"></span>
-                <span class="w-1.5 h-6 bg-indigo-500 rounded-full" style="animation: speakingWave 0.5s infinite 0.15s"></span>
-                <span class="text-xs font-extrabold text-indigo-700 ml-1">স্পষ্ট বাংলায় উচ্চারণ চলছে...</span>
-            </div>
-
-            <div class="flex items-center justify-center gap-3 mt-1">
-                <span id="modal-badge" class="bg-indigo-600 text-white px-4 py-1 rounded-2xl text-3xl sm:text-4xl font-extrabold shadow-md border-2 border-indigo-200">অ</span>
-                <div class="text-left">
-                    <div id="modal-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">অজগর</div>
-                    <div id="modal-subtitle" class="text-sm sm:text-base font-bold text-rose-600">স্বরে অ</div>
-                </div>
-            </div>
-
-            <div id="modal-extra" class="text-lg sm:text-xl text-indigo-950 mt-3 font-extrabold bg-amber-100/90 border-2 border-amber-300 rounded-2xl py-2.5 px-4 shadow-sm"></div>
-
-            <div class="mt-4 flex flex-wrap justify-center gap-3">
-                <button id="modal-replay-btn" class="toy-btn flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-base sm:text-lg font-extrabold border-2 border-emerald-700"><span>🔊</span> আবার শোনো</button>
-                <button id="modal-action-btn" class="toy-btn flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 text-white text-base sm:text-lg font-extrabold border-2 border-orange-600"><span>✨</span> ৩ডি অ্যাকশন!</button>
-            </div>
+    <section class="hero">
+      <div class="clouds"></div>
+      <div class="hero-grid">
+        <div class="headline">
+          <div class="eyebrow">🎧 উচ্চারণ শিখি, খেলতে খেলতে</div>
+          <h2>বাংলা <span class="highlight">শব্দ</span> ঠিকভাবে শুনে বলো!</h2>
+          <p class="subtext">
+            এখানে শিশুদের জন্য স্পষ্ট বাংলা উচ্চারণ, খুব বড় ভিজুয়াল, সহজ খেলা ও অ্যাডভেঞ্চার-ভিত্তিক সংবেদন শেখানো হয়।
+            “অজগর” শব্দটি ঠিকভাবে শুনে বলুন, তারপর সাপটাকে আঙুল দিয়ে তাড়িয়ে দিন—এইভাবেই শিশুরা খেলতে খেলতে শিখে!
+          </p>
+          <div class="cta-wrap">
+            <button class="main-btn" id="playIntro">🔊 এখনই শুনুন</button>
+            <button class="sec-btn" id="jumpToGame">🎮 খেলা শুরু করুন</button>
+          </div>
         </div>
-    </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-xl border-t-4 border-indigo-200 px-2 py-2 shadow-[0_-10px_25px_rgba(30,27,75,0.08)]">
-        <div class="max-w-5xl mx-auto grid grid-cols-6 gap-1.5 sm:gap-3">
-            <button onclick="switchTab('bangla')" id="tab-bangla" class="nav-tab toy-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl bg-rose-500 text-white border-2 border-rose-700 scale-105"><span class="text-xl sm:text-2xl font-extrabold leading-none">অ আ</span><span class="text-[11px] sm:text-xs font-bold mt-1 truncate">বর্ণমালা</span></button>
-            <button onclick="switchTab('english')" id="tab-english" class="nav-tab toy-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl bg-sky-100 text-sky-900 border-2 border-sky-300"><span class="font-eng text-xl sm:text-2xl font-extrabold leading-none">ABC</span><span class="text-[11px] sm:text-xs font-bold mt-1 truncate">English</span></button>
-            <button onclick="switchTab('numbers')" id="tab-numbers" class="nav-tab toy-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl bg-emerald-100 text-emerald-900 border-2 border-emerald-300"><span class="text-xl sm:text-2xl font-extrabold leading-none">১২৩</span><span class="text-[11px] sm:text-xs font-bold mt-1 truncate">সংখ্যা</span></button>
-            <button onclick="switchTab('sentences')" id="tab-sentences" class="nav-tab toy-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl bg-purple-100 text-purple-900 border-2 border-purple-300"><span class="text-xl sm:text-2xl font-extrabold leading-none">কথা</span><span class="text-[11px] sm:text-xs font-bold mt-1 truncate">ছোট বাক্য</span></button>
-            <button onclick="switchTab('rhymes')" id="tab-rhymes" class="nav-tab toy-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl bg-amber-100 text-amber-900 border-2 border-amber-300"><span class="text-xl sm:text-2xl font-extrabold leading-none">ছড়া</span><span class="text-[11px] sm:text-xs font-bold mt-1 truncate">ছড়া ও গান</span></button>
-            <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-tab toy-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl bg-pink-100 text-pink-900 border-2 border-pink-300"><span class="text-xl sm:text-2xl font-extrabold leading-none">কুইজ</span><span class="text-[11px] sm:text-xs font-bold mt-1 truncate">মজার খেলা</span></button>
+        <div class="snakeside">
+          <div class="snake-scene">
+            <div class="scene-sun"></div>
+            <div class="speech-bubble">অজগর সাপ!</div>
+            <div class="snake-wrap" id="snakeWrap" role="button" tabindex="0" aria-label="Tap to scare the snake">
+              <div class="snake-body"></div>
+              <div class="snake-head"></div>
+              <div class="tongue"></div>
+            </div>
+            <div class="grass"></div>
+          </div>
         </div>
-    </nav>
+      </div>
 
-    <script>
-        function renderUnified3DCardStage(archetype, primaryHex, secondaryHex, badgeText = '', count = 1) {
-            const uid = 'g_' + Math.random().toString(36).substring(2, 8);
-            const animClass = archetype === 'python' ? 'rig-slither' : (archetype === 'bird' || archetype === 'butterfly') ? 'rig-flap' : (archetype === 'fish' || archetype === 'boat') ? 'rig-swim' : (archetype === 'quadruped' || archetype === 'mouse' || archetype === 'child') ? 'rig-hop' : 'rig-float';
-            function getCharacterSVG(scale = 1, offsetX = 0, offsetY = 0) {
-                return `<g transform="translate(${offsetX}, ${offsetY}) scale(${scale})">${buildArchetypePaths(archetype, uid, primaryHex, secondaryHex)}</g>`;
-            }
-            let stageActors = '';
-            if (count > 1 && count <= 10) {
-                const cols = count <= 2 ? count : (count <= 4 ? 2 : (count <= 6 ? 3 : 5));
-                const rows = Math.ceil(count / cols);
-                const cellW = 160 / cols;
-                const cellH = 95 / rows;
-                const sc = count <= 2 ? 0.58 : (count <= 4 ? 0.44 : (count <= 6 ? 0.36 : 0.28));
-                for (let i = 0; i < count; i++) {
-                    const r = Math.floor(i / cols);
-                    const c = i % cols;
-                    const cx = (c + 0.5) * cellW + 20 - 100 * sc;
-                    const cy = (r + 0.5) * cellH + 12 - 70 * sc;
-                    stageActors += getCharacterSVG(sc, cx, cy);
-                }
-            } else {
-                stageActors = getCharacterSVG(1, 0, 0);
-            }
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="num">৬+</div>
+          <div class="label">বাড়তি ভিজুয়াল শব্দ</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">৩</div>
+          <div class="label">খেলার ধাপ</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">৯৯%</div>
+          <div class="label">খেলাধুলার ফোকাস</div>
+        </div>
+      </div>
+    </section>
 
-            return `
-                <svg viewBox="0 0 200 135" class="w-full h-32 sm:h-36 overflow-visible drop-shadow-md ${animClass}">
-                    <defs>
-                        <radialGradient id="${uid}_main" cx="35%" cy="28%" r="70%">
-                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
-                            <stop offset="30%" stop-color="${primaryHex}"/>
-                            <stop offset="100%" stop-color="${secondaryHex}"/>
-                        </radialGradient>
-                        <radialGradient id="${uid}_acc" cx="35%" cy="30%" r="70%">
-                            <stop offset="0%" stop-color="#fef08a"/>
-                            <stop offset="100%" stop-color="#f59e0b"/>
-                        </radialGradient>
-                        <linearGradient id="${uid}_leaf" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#4ade80"/>
-                            <stop offset="100%" stop-color="#15803d"/>
-                        </linearGradient>
-                    </defs>
-                    <ellipse cx="100" cy="120" rx="58" ry="10" fill="#0f172a" opacity="0.14"/>
-                    ${stageActors}
-                </svg>
-            `;
+    <section class="section">
+      <div class="section-head">
+        <h3>বাংলা অক্ষর ও শব্দ</h3>
+        <div class="tag">সঠিক উচ্চারণ</div>
+      </div>
+
+      <div class="card-grid" id="cardGrid"></div>
+    </section>
+
+    <section class="focus-panel">
+      <div class="panel">
+        <div class="teacher-box">
+          <div class="teacher-avatar">👩‍🏫</div>
+          <div>
+            <h4>শিক্ষকTips</h4>
+            <p>একটি শব্দকে ছোট ছোট অংশে শোনান; তারপর পুরো শব্দটি আবার বলান</p>
+          </div>
+        </div>
+
+        <div class="pronounce-box" id="pronounceBox"></div>
+      </div>
+
+      <div class="panel">
+        <div class="challenge-box">
+          <div class="challenge-card">
+            <div>
+              <strong>চ্যালেঞ্জ ১</strong>
+              <span>অজগর শব্দটি সঠিকভাবে বলো</span>
+            </div>
+            <button class="mini-btn" data-sound="অজগর সাপ">▶️ শুনুন</button>
+          </div>
+
+          <div class="challenge-card">
+            <div>
+              <strong>চ্যালেঞ্জ ২</strong>
+              <span>সাপটাকে হাত দিয়ে তাড়াও</span>
+            </div>
+            <button class="mini-btn" id="snakeTapBtn">🖐️ চাপ দিন</button>
+          </div>
+
+          <div class="challenge-card">
+            <div>
+              <strong>চ্যালেঞ্জ ৩</strong>
+              <span>শব্দ মনে রাখে তারপর বলো</span>
+            </div>
+            <button class="mini-btn" data-sound="শব্দ বলি">🔊 শুনুন</button>
+          </div>
+        </div>
+
+        <div class="reward-track">
+          <div class="star-badges">
+            <div class="star">⭐</div>
+            <div class="star">⭐</div>
+            <div class="star">⭐</div>
+          </div>
+          <div class="pill">দুইটি টার্গেট পূর্ণ</div>
+        </div>
+        <div class="progress"><div class="progress-bar"></div></div>
+      </div>
+    </section>
+
+    <section class="game-area" id="gameSection">
+      <div class="game-head">
+        <h3>খেলা: “অজগরকে তাড়াও”</h3>
+        <div class="tag">এন্টারটেইনমেন্ট + প্র্যাকটিস</div>
+      </div>
+
+      <div class="interaction-zone">
+        <div class="snake-stage" id="snakeStage">
+          <div class="snake-game-wrap">
+            <div class="snake-wrap" id="snakeWrapGame">
+              <div class="snake-body"></div>
+              <div class="snake-head"></div>
+              <div class="tongue"></div>
+            </div>
+          </div>
+          <div class="hand-hit">👋</div>
+          <div class="floating-spark" style="left: 22%; top: 18%; animation-delay: 0.2s;"></div>
+          <div class="floating-spark" style="left: 62%; top: 15%; animation-delay: 0.8s;"></div>
+          <div class="floating-spark" style="right: 16%; top: 28%; animation-delay: 1.2s;"></div>
+        </div>
+
+        <div class="game-note">
+          <div class="note-box">
+            <strong>শব্দ শুনুন</strong>
+            <small>“অ + জগর = অজগর”</small>
+            <div style="margin-top: 12px; display:flex; align-items:center; gap:10px;">
+              <button class="speaker" id="speakerMain" aria-label="Speak current lesson">🔊</button>
+              <span id="lessonLabel">অজগর</span>
+            </div>
+          </div>
+
+          <div class="note-box">
+            <strong>শিখার পদ্ধতি</strong>
+            <small>১) শব্দ শুনুন ২) উচ্চারণ করুন ৩) সাপকে তাড়িয়ে দিন ৪) আবার চেষ্টা করুন</small>
+          </div>
+
+          <div class="note-box">
+            <strong>সঠিক উচ্চারণ</strong>
+            <small id="correctText">অজগর সাপ তেড়ে আসছে</small>
+          </div>
+
+          <div class="game-btns">
+            <button class="mini-btn" id="repeatWord">🔁 শব্দ আবার শুনুন</button>
+            <button class="mini-btn" id="scareSnakeBtn">⚡ সাপকে তাড়ান</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const lessons = [
+      { letter: 'অ', word: 'অজগর', phrase: 'অজগর সাপ', prompt: 'অ + জগর = অজগর', sound: 'অজগর সাপ তেড়ে আসছে', color: 'linear-gradient(135deg, #dbeafe, #fdf2f8)' },
+      { letter: 'আ', word: 'আম', phrase: 'আম খাও', prompt: 'আ + ম = আম', sound: 'আম খাও', color: 'linear-gradient(135deg, #dcfce7, #fef3c7)' },
+      { letter: 'ই', word: 'ইঁদুর', phrase: 'ইঁদুর দৌড়ায়', prompt: 'ইন্ + দুর = ইঁদুর', sound: 'ইঁদুর দৌড়ায়', color: 'linear-gradient(135deg, #fce7f3, #fef3c7)' },
+      { letter: 'উ', word: 'উট', phrase: 'উট বনে', prompt: 'উ + ট = উট', sound: 'উট বনে', color: 'linear-gradient(135deg, #e0f2fe, #ede9fe)' },
+      { letter: 'এ', word: 'এলিফ্যান্ট', phrase: 'এলিফ্যান্ট বড়', prompt: 'এ + লি + ফ্যান্ট = এলিফ্যান্ট', sound: 'এলিফ্যান্ট বড়', color: 'linear-gradient(135deg, #ecfccb, #dbeafe)' },
+      { letter: 'ও', word: 'ওরাঙ', phrase: 'ওরাঙ ছোট', prompt: 'ও + রাঙ = ওরাঙ', sound: 'ওরাঙ ছোট', color: 'linear-gradient(135deg, #f3e8ff, #dbeafe)' },
+      { letter: 'ক', word: 'কুকুর', phrase: 'কুকুর ছুটে', prompt: 'কু + কর = কুকুর', sound: 'কুকুর ছুটে', color: 'linear-gradient(135deg, #e0f2fe, #fcd34d)' },
+      { letter: 'গ', word: 'গাছ', phrase: 'গাছ বড়', prompt: 'গা + চ = গাছ', sound: 'গাছ বড়', color: 'linear-gradient(135deg, #bbf7d0, #dcfce7)' }
+    ];
+
+    const cardGrid = document.getElementById('cardGrid');
+    const pronounceBox = document.getElementById('pronounceBox');
+    const lessonLabel = document.getElementById('lessonLabel');
+    const correctText = document.getElementById('correctText');
+
+    let activeLesson = lessons[0];
+
+    function renderCardGrid() {
+      cardGrid.innerHTML = lessons.map((item, index) => `
+        <div class="lesson-card ${index === 0 ? 'active' : ''}" data-index="${index}">
+          <div class="letter-bubble">${item.letter}</div>
+          <div class="play-bar">▶</div>
+          <p class="word">${item.word}</p>
+          <p class="phrase">${item.phrase}</p>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.lesson-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          const index = Number(card.dataset.index);
+          setActiveLesson(index);
+        });
+      });
+    }
+
+    function renderPronounceBox() {
+      pronounceBox.innerHTML = `
+        <div class="sound-chip">${activeLesson.letter}</div>
+        <div class="sound-chip">${activeLesson.word}</div>
+        <div class="sound-chip">${activeLesson.phrase}</div>
+        <div class="sound-chip">${activeLesson.prompt}</div>
+      `;
+    }
+
+    function setActiveLesson(index) {
+      activeLesson = lessons[index];
+      document.querySelectorAll('.lesson-card').forEach((card, i) => {
+        card.classList.toggle('active', i === index);
+      });
+      lessonLabel.textContent = activeLesson.word;
+      correctText.textContent = activeLesson.sound;
+      renderPronounceBox();
+      speakText(activeLesson.sound);
+    }
+
+    const voiceQueue = [];
+
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) return;
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+      }
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'bn-BD';
+      utterance.rate = 0.92;
+      utterance.pitch = 1.15;
+      utterance.volume = 1;
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v => /bn|bangla|bengali/i.test(v.lang)) || voices[0];
+      if (preferred) utterance.voice = preferred;
+      speechSynthesis.speak(utterance);
+    }
+
+    function safeSpeak() {
+      if (!('speechSynthesis' in window)) {
+        alert('এই ব্রাউজারে স্পীচ API আছে না।');
+        return;
+      }
+      const target = activeLesson.sound;
+      speakText(target);
+    }
+
+    document.getElementById('playIntro').addEventListener('click', safeSpeak);
+    document.getElementById('speakerMain').addEventListener('click', safeSpeak);
+    document.getElementById('repeatWord').addEventListener('click', safeSpeak);
+
+    document.querySelectorAll('[data-sound]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const sound = button.getAttribute('data-sound');
+        speakText(sound);
+      });
+    });
+
+    document.getElementById('jumpToGame').addEventListener('click', () => {
+      document.getElementById('gameSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      speakText('অজগর সাপ তেড়ে আসছে');
+    });
+
+    const snakeWraps = [document.getElementById('snakeWrap'), document.getElementById('snakeWrapGame')];
+
+    function scareSnake() {
+      snakeWraps.forEach((snake) => {
+        snake.classList.remove('scared');
+        void snake.offsetWidth;
+        snake.classList.add('scared');
+      });
+      speakText('অজগর সাপ! ছুড়ে দাও!');
+      setTimeout(() => {
+        snakeWraps.forEach((snake) => snake.classList.remove('scared'));
+      }, 700);
+    }
+
+    document.getElementById('snakeTapBtn').addEventListener('click', scareSnake);
+    document.getElementById('scareSnakeBtn').addEventListener('click', scareSnake);
+    document.getElementById('snakeWrap').addEventListener('click', scareSnake);
+    document.getElementById('snakeWrapGame').addEventListener('click', scareSnake);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        const active = document.activeElement;
+        if (active && active.id === 'snakeWrap') {
+          scareSnake();
         }
-
-        function buildArchetypePaths(archetype, uid, primaryHex, secondaryHex) {
-            switch (archetype) {
-                case 'python':
-                    return `
-                        <path d="M28 102 C 52 54, 82 122, 112 72 C 135 38, 152 98, 168 62" fill="none" stroke="url(#${uid}_acc)" stroke-width="24" stroke-linecap="round"/>
-                        <path d="M28 102 C 52 54, 82 122, 112 72 C 135 38, 152 98, 168 62" fill="none" stroke="url(#${uid}_main)" stroke-width="18" stroke-linecap="round"/>
-                        <circle cx="58" cy="84" r="4.5" fill="#14532d" opacity="0.6"/>
-                        <circle cx="96" cy="90" r="5" fill="#14532d" opacity="0.6"/>
-                        <circle cx="132" cy="68" r="4.5" fill="#14532d" opacity="0.6"/>
-                        <g transform="translate(148, 30)">
-                            <ellipse cx="22" cy="26" rx="24" ry="18" fill="url(#${uid}_main)"/>
-                            <circle cx="16" cy="17" r="7" fill="#fff"/><circle cx="31" cy="17" r="7" fill="#fff"/>
-                            <circle cx="18" cy="17" r="3.8" fill="#0f172a"/><circle cx="33" cy="17" r="3.8" fill="#0f172a"/>
-                            <circle cx="16.5" cy="15" r="1.5" fill="#fff"/><circle cx="31.5" cy="15" r="1.5" fill="#fff"/>
-                            <path d="M12 32 Q24 43 38 32" fill="#dc2626"/>
-                            <path d="M39 31 Q54 31 60 25 M54 30 L60 36" stroke="#ef4444" stroke-width="3" fill="none" stroke-linecap="round"/>
-                        </g>`;
-                case 'fruit':
-                    return `
-                        <path d="M100 22 L100 38" stroke="#78350f" stroke-width="6" stroke-linecap="round"/>
-                        <path d="M102 28 Q130 14 138 34 Q118 44 102 28 Z" fill="url(#${uid}_leaf)"/>
-                        <path d="M100 34 C 134 34, 144 72, 124 104 C 110 124, 84 124, 72 104 C 54 74, 66 34, 100 34 Z" fill="url(#${uid}_main)"/>
-                        <ellipse cx="82" cy="58" rx="7" ry="13" fill="#fff" opacity="0.42" transform="rotate(-20 82 58)"/>
-                        <circle cx="88" cy="76" r="5" fill="#1e1b4b"/><circle cx="112" cy="76" r="5" fill="#1e1b4b"/>
-                        <circle cx="86.5" cy="74" r="1.8" fill="#fff"/><circle cx="110.5" cy="74" r="1.8" fill="#fff"/>
-                        <path d="M92 88 Q100 96 108 88" stroke="#7f1d1d" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
-                case 'mouse':
-                    return `
-                        <path d="M134 96 Q160 78 148 56" stroke="#f472b6" stroke-width="5" fill="none" stroke-linecap="round"/>
-                        <circle cx="76" cy="44" r="18" fill="url(#${uid}_main)"/><circle cx="76" cy="44" r="10" fill="#fbcfe8"/>
-                        <circle cx="122" cy="44" r="18" fill="url(#${uid}_main)"/><circle cx="122" cy="44" r="10" fill="#fbcfe8"/>
-                        <ellipse cx="99" cy="78" rx="34" ry="27" fill="url(#${uid}_main)"/>
-                        <ellipse cx="99" cy="86" rx="20" ry="14" fill="#f1f5f9"/>
-                        <circle cx="86" cy="69" r="6" fill="#fff"/><circle cx="112" cy="69" r="6" fill="#fff"/>
-                        <circle cx="86" cy="69" r="3.5" fill="#0f172a"/><circle cx="112" cy="69" r="3.5" fill="#0f172a"/>
-                        <circle cx="99" cy="79" r="5.5" fill="#ec4899"/>`;
-                case 'bird':
-                    return `
-                        <path d="M32 56 Q65 18 100 58 Q135 18 168 56 Q140 86 100 74 Q60 86 32 56 Z" fill="url(#${uid}_main)"/>
-                        <ellipse cx="100" cy="74" rx="24" ry="26" fill="url(#${uid}_main)"/>
-                        <circle cx="100" cy="48" r="20" fill="#ffffff"/>
-                        <circle cx="92" cy="45" r="4.5" fill="#0f172a"/><circle cx="108" cy="45" r="4.5" fill="#0f172a"/>
-                        <path d="M92 52 Q100 68 108 52 Z" fill="url(#${uid}_acc)"/>`;
-                case 'butterfly':
-                    return `
-                        <ellipse cx="72" cy="52" rx="30" ry="22" fill="url(#${uid}_main)"/>
-                        <ellipse cx="128" cy="52" rx="30" ry="22" fill="url(#${uid}_main)"/>
-                        <ellipse cx="76" cy="84" rx="22" ry="18" fill="url(#${uid}_acc)"/>
-                        <ellipse cx="124" cy="84" rx="22" ry="18" fill="url(#${uid}_acc)"/>
-                        <rect x="94" y="34" width="12" height="60" rx="6" fill="#1e1b4b"/>
-                        <path d="M97 34 Q84 16 76 20 M103 34 Q116 16 124 20" stroke="#1e1b4b" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-                case 'fish':
-                    return `
-                        <polygon points="134,68 164,42 154,68 164,94" fill="url(#${uid}_acc)"/>
-                        <ellipse cx="94" cy="68" rx="42" ry="28" fill="url(#${uid}_main)"/>
-                        <circle cx="72" cy="60" r="7" fill="#fff"/><circle cx="70" cy="60" r="4" fill="#0f172a"/>
-                        <path d="M62 74 Q72 82 80 74" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`;
-                case 'quadruped':
-                    return `
-                        <rect x="68" y="84" width="11" height="26" rx="5" fill="${secondaryHex}"/>
-                        <rect x="86" y="86" width="11" height="26" rx="5" fill="${primaryHex}"/>
-                        <rect x="110" y="84" width="11" height="26" rx="5" fill="${secondaryHex}"/>
-                        <rect x="126" y="86" width="11" height="26" rx="5" fill="${primaryHex}"/>
-                        <ellipse cx="102" cy="74" rx="36" ry="24" fill="url(#${uid}_main)"/>
-                        <circle cx="72" cy="54" r="22" fill="url(#${uid}_main)"/>
-                        <ellipse cx="58" cy="44" rx="8" ry="14" fill="${secondaryHex}"/>
-                        <ellipse cx="86" cy="44" rx="8" ry="14" fill="${secondaryHex}"/>
-                        <circle cx="65" cy="50" r="4.5" fill="#0f172a"/><circle cx="79" cy="50" r="4.5" fill="#0f172a"/>
-                        <ellipse cx="72" cy="60" rx="9" ry="6" fill="#fde047"/>`;
-                case 'sun':
-                case 'moon':
-                case 'star':
-                    return `
-                        <circle cx="100" cy="66" r="42" fill="url(#${uid}_acc)"/>
-                        <circle cx="100" cy="66" r="34" fill="url(#${uid}_main)"/>
-                        <circle cx="88" cy="60" r="5" fill="#1e1b4b"/><circle cx="112" cy="60" r="5" fill="#1e1b4b"/>
-                        <circle cx="86" cy="58" r="2" fill="#fff"/><circle cx="110" cy="58" r="2" fill="#fff"/>
-                        <path d="M90 74 Q100 84 110 74" stroke="#78350f" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
-                case 'vehicle':
-                case 'boat':
-                    return `
-                        <path d="M52 78 L68 48 L132 48 L148 78 Z" fill="url(#${uid}_acc)"/>
-                        <rect x="42" y="72" width="116" height="28" rx="14" fill="url(#${uid}_main)"/>
-                        <circle cx="70" cy="102" r="14" fill="#1e293b"/><circle cx="70" cy="102" r="6" fill="#cbd5e1"/>
-                        <circle cx="130" cy="102" r="14" fill="#1e293b"/><circle cx="130" cy="102" r="6" fill="#cbd5e1"/>`;
-                case 'flower':
-                    return `
-                        <path d="M100 68 L100 116" stroke="#15803d" stroke-width="8" stroke-linecap="round"/>
-                        <circle cx="100" cy="40" r="16" fill="url(#${uid}_main)"/>
-                        <circle cx="124" cy="56" r="16" fill="url(#${uid}_main)"/>
-                        <circle cx="115" cy="82" r="16" fill="url(#${uid}_main)"/>
-                        <circle cx="85" cy="82" r="16" fill="url(#${uid}_main)"/>
-                        <circle cx="76" cy="56" r="16" fill="url(#${uid}_main)"/>
-                        <circle cx="100" cy="62" r="18" fill="url(#${uid}_acc)"/>
-                        <circle cx="94" cy="59" r="3.5" fill="#1e1b4b"/><circle cx="106" cy="59" r="3.5" fill="#1e1b4b"/>
-                        <path d="M94 67 Q100 73 106 67" stroke="#1e1b4b" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
-                default:
-                    return `
-                        <circle cx="100" cy="68" r="36" fill="url(#${uid}_main)"/>
-                        <ellipse cx="86" cy="54" rx="10" ry="6" fill="#fff" opacity="0.35" transform="rotate(-25 86 54)"/>
-                        <circle cx="86" cy="62" r="6" fill="#fff"/><circle cx="114" cy="62" r="6" fill="#fff"/>
-                        <circle cx="86" cy="62" r="3.5" fill="#1e1b4b"/><circle cx="114" cy="62" r="3.5" fill="#1e1b4b"/>
-                        <circle cx="76" cy="72" r="5" fill="#f43f5e" opacity="0.45"/><circle cx="124" cy="72" r="5" fill="#f43f5e" opacity="0.45"/>
-                        <path d="M90 76 Q100 86 110 76" stroke="#1e1b4b" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
-            }
-        }
-
-        let stage3D = {
-            renderer: null,
-            scene: null,
-            camera: null,
-            animId: null,
-            clock: null,
-            actorGroup: null,
-            snakeSegments: [],
-            wings: [],
-            wheels: [],
-            particles: [],
-            archetype: 'child',
-            actionState: 'idle',
-            actionTimer: 0,
-            isDragging: false,
-            prevX: 0,
-            userRotY: 0,
-            currentSpeakFn: null
-        };
-
-        function stop3DStage() {
-            if (stage3D.animId) { cancelAnimationFrame(stage3D.animId); stage3D.animId = null; }
-            if (stage3D.renderer) { stage3D.renderer.dispose(); stage3D.renderer = null; }
-        }
-
-        function add3DPixarEyesAndSmile(parentMesh, zOffset = 0.65, yOffset = 0.18, scale = 1) {
-            const eyeWhiteGeo = new THREE.SphereGeometry(0.14 * scale, 16, 16);
-            const eyeWhiteMat = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 100 });
-            const pupilGeo = new THREE.SphereGeometry(0.075 * scale, 12, 12);
-            const pupilMat = new THREE.MeshBasicMaterial({ color: 0x0f172a });
-            const leftEye = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
-            leftEye.position.set(-0.24 * scale, yOffset, zOffset);
-            const leftPupil = new THREE.Mesh(pupilGeo, pupilMat);
-            leftPupil.position.set(-0.24 * scale, yOffset, zOffset + 0.1 * scale);
-            const rightEye = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
-            rightEye.position.set(0.24 * scale, yOffset, zOffset);
-            const rightPupil = new THREE.Mesh(pupilGeo, pupilMat);
-            rightPupil.position.set(0.24 * scale, yOffset, zOffset + 0.1 * scale);
-            const cheekGeo = new THREE.SphereGeometry(0.09 * scale, 12, 12);
-            const cheekMat = new THREE.MeshBasicMaterial({ color: 0xf43f5e });
-            const cheekL = new THREE.Mesh(cheekGeo, cheekMat); cheekL.position.set(-0.38 * scale, yOffset - 0.14 * scale, zOffset - 0.04);
-            const cheekR = new THREE.Mesh(cheekGeo, cheekMat); cheekR.position.set(0.38 * scale, yOffset - 0.14 * scale, zOffset - 0.04);
-            const mouthGeo = new THREE.TorusGeometry(0.12 * scale, 0.035 * scale, 10, 20, Math.PI);
-            const mouthMat = new THREE.MeshBasicMaterial({ color: 0x881337 });
-            const mouth = new THREE.Mesh(mouthGeo, mouthMat); mouth.rotation.x = Math.PI; mouth.position.set(0, yOffset - 0.16 * scale, zOffset + 0.04);
-            parentMesh.add(leftEye, leftPupil, rightEye, rightPupil, cheekL, cheekR, mouth);
-        }
-
-        function buildUniversal3DActor(group, archetype, primaryHex, secondaryHex, count = 1) {
-            stage3D.snakeSegments = [];
-            stage3D.wings = [];
-            stage3D.wheels = [];
-            const mainColor = new THREE.Color(primaryHex || '#f43f5e');
-            const secColor = new THREE.Color(secondaryHex || '#fbbf24');
-            const mainMat = new THREE.MeshPhongMaterial({ color: mainColor, shininess: 95, specular: 0xffffff });
-            const secMat = new THREE.MeshPhongMaterial({ color: secColor, shininess: 85 });
-            const darkMat = new THREE.MeshPhongMaterial({ color: 0x1e293b, shininess: 60 });
-            const whiteMat = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 100 });
-
-            function createSingle3DModel() {
-                const model = new THREE.Group();
-
-                if (archetype === 'python') {
-                    const segCount = 20;
-                    for (let i = 0; i < segCount; i++) {
-                        const r = i === 0 ? 0.56 : Math.max(0.15, 0.46 * (1 - i / (segCount + 2)));
-                        const seg = new THREE.Group();
-                        const sphere = new THREE.Mesh(new THREE.SphereGeometry(r, 20, 20), i % 2 === 0 ? mainMat : secMat);
-                        seg.add(sphere);
-                        if (i === 0) {
-                            sphere.scale.set(1.2, 1.0, 1.35);
-                            sphere.userData.isHead = true;
-                            add3DPixarEyesAndSmile(seg, 0.52, 0.22, 1.12);
-                            const tongue = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.03, 0.55), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
-                            tongue.position.set(0, -0.1, 0.8); seg.add(tongue);
-                        }
-                        model.add(seg);
-                        stage3D.snakeSegments.push(seg);
-                    }
-                    return model;
-                }
-
-                if (archetype === 'fruit') {
-                    const body = new THREE.Mesh(new THREE.SphereGeometry(0.85, 28, 28), mainMat); body.scale.set(0.95, 1.18, 0.9);
-                    model.add(body);
-                    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.09, 0.45, 12), new THREE.MeshPhongMaterial({ color: 0x78350f })); stem.position.set(0, 1.05, 0);
-                    const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 12), new THREE.MeshPhongMaterial({ color: 0x16a34a })); leaf.scale.set(1.6, 0.28, 0.7); leaf.position.set(0.35, 1.0, 0); leaf.rotation.z = 0.35;
-                    model.add(stem, leaf);
-                    add3DPixarEyesAndSmile(model, 0.74, 0.15, 1.05);
-                    return model;
-                }
-
-                if (archetype === 'bird' || archetype === 'butterfly') {
-                    const body = new THREE.Mesh(new THREE.SphereGeometry(0.62, 24, 24), mainMat); body.scale.set(0.9, 1.05, 1.2);
-                    const head = new THREE.Mesh(new THREE.SphereGeometry(0.48, 24, 24), archetype === 'bird' ? whiteMat : secMat); head.position.set(0, 0.55, 0.35);
-                    const beak = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.42, 16), secMat); beak.rotation.x = Math.PI / 2; beak.position.set(0, 0.52, 0.88);
-                    model.add(body, head, beak);
-                    add3DPixarEyesAndSmile(head, 0.4, 0.08, 0.85);
-                    const wingGeo = archetype === 'butterfly' ? new THREE.SphereGeometry(0.75, 20, 16) : new THREE.BoxGeometry(1.45, 0.12, 0.68);
-                    const wingL = new THREE.Mesh(wingGeo, secMat); if (archetype === 'butterfly') wingL.scale.set(1.2, 0.15, 0.85); wingL.position.set(-0.95, 0.25, 0);
-                    const wingR = new THREE.Mesh(wingGeo, secMat); if (archetype === 'butterfly') wingR.scale.set(1.2, 0.15, 0.85); wingR.position.set(0.95, 0.25, 0);
-                    model.add(wingL, wingR); stage3D.wings.push({ wingL, wingR });
-                    return model;
-                }
-
-                if (archetype === 'fish') {
-                    const body = new THREE.Mesh(new THREE.SphereGeometry(0.75, 24, 24), mainMat); body.scale.set(1.35, 0.92, 0.75);
-                    const tail = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.65, 4), secMat); tail.rotation.z = Math.PI / 2; tail.position.set(-1.1, 0, 0);
-                    model.add(body, tail); add3DPixarEyesAndSmile(model, 0.54, 0.12, 0.95); return model;
-                }
-
-                if (archetype === 'quadruped' || archetype === 'mouse') {
-                    const torso = new THREE.Mesh(new THREE.SphereGeometry(0.72, 24, 24), mainMat); torso.scale.set(1.25, 0.92, 0.95); torso.position.set(0,-0.1,0);
-                    const head = new THREE.Mesh(new THREE.SphereGeometry(0.56, 24, 24), mainMat); head.position.set(0, 0.48, 0.55);
-                    const earGeo = new THREE.SphereGeometry(0.28, 16, 16); earGeo.scale(0.8, 1.35, 0.4);
-                    const earL = new THREE.Mesh(earGeo, secMat); earL.position.set(-0.38, 0.95, 0.5);
-                    const earR = new THREE.Mesh(earGeo, secMat); earR.position.set(0.38, 0.95, 0.5);
-                    [[-0.42,-0.75,0.35],[0.42,-0.75,0.35],[-0.42,-0.75,-0.35],[0.42,-0.75,-0.35]].forEach(pos => {
-                        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.55, 12), secMat); leg.position.set(...pos); model.add(leg);
-                    });
-                    model.add(torso, head, earL, earR); add3DPixarEyesAndSmile(head, 0.48, 0.08, 0.95); return model;
-                }
-
-                if (archetype === 'vehicle' || archetype === 'boat') {
-                    const base = new THREE.Mesh(new THREE.BoxGeometry(1.9, 0.65, 1.1), mainMat); base.position.y = -0.15;
-                    const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.55, 0.95), secMat); cabin.position.set(0, 0.42, 0);
-                    model.add(base, cabin); add3DPixarEyesAndSmile(base, 0.56, 0.05, 0.9);
-                    if (archetype === 'vehicle') {
-                        [[-0.6,-0.52,0.58],[0.6,-0.52,0.58],[-0.6,-0.52,-0.58],[0.6,-0.52,-0.58]].forEach(pos => {
-                            const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.2, 16), darkMat); wheel.rotation.x = Math.PI / 2; wheel.position.set(...pos); model.add(wheel); stage3D.wheels.push(wheel);
-                        });
-                    }
-                    return model;
-                }
-
-                if (archetype === 'flower' || archetype === 'sun' || archetype === 'star' || archetype === 'moon') {
-                    const core = new THREE.Mesh(new THREE.SphereGeometry(0.68, 24, 24), secMat); model.add(core);
-                    for (let i = 0; i < 8; i++) {
-                        const a = (i / 8) * Math.PI * 2;
-                        const petal = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 16), mainMat); petal.position.set(Math.cos(a) * 0.82, Math.sin(a) * 0.82, -0.05); model.add(petal);
-                    }
-                    add3DPixarEyesAndSmile(core, 0.62, 0.1, 1.0); return model;
-                }
-
-                const body = new THREE.Mesh(new THREE.SphereGeometry(0.82, 28, 28), mainMat);
-                const hat = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.65, 20), secMat); hat.position.set(0, 0.95, 0);
-                model.add(body, hat); add3DPixarEyesAndSmile(body, 0.76, 0.12, 1.1); return model;
-            }
-
-            if (count > 1 && count <= 10) {
-                const cols = count <= 3 ? count : Math.ceil(count / 2);
-                const scale = count <= 2 ? 0.68 : (count <= 5 ? 0.52 : 0.38);
-                for (let i = 0; i < count; i++) {
-                    const inst = createSingle3DModel(); inst.scale.setScalar(scale);
-                    const row = Math.floor(i / cols); const col = i % cols;
-                    const xSpread = (col - (cols - 1) / 2) * (2.6 / Math.max(1, cols - 1 || 1));
-                    const ySpread = (0.5 - row) * 1.1;
-                    inst.position.set(cols === 1 ? 0 : xSpread, count <= 3 ? 0 : ySpread, row * 0.35);
-                    inst.userData.phase = i * 0.7;
-                    group.add(inst);
-                }
-            } else {
-                const single = createSingle3DModel(); group.add(single);
-            }
-        }
-
-        function trigger3DExplosion(originPos = new THREE.Vector3(0, 0.3, 0.4)) {
-            if (!stage3D.scene) return;
-            const colors = [0xf43f5e, 0xf59e0b, 0x10b981, 0x3b82f6, 0xa855f7, 0xfacc15];
-            for (let i = 0; i < 24; i++) {
-                const mesh = new THREE.Mesh(
-                    new THREE.SphereGeometry(0.12 + Math.random() * 0.08, 12, 12),
-                    new THREE.MeshPhongMaterial({ color: colors[i % colors.length], shininess: 100 })
-                );
-                mesh.position.copy(originPos);
-                const angle = Math.random() * Math.PI * 2;
-                const spd = 2.5 + Math.random() * 4.5;
-                mesh.userData.vel = new THREE.Vector3(Math.cos(angle) * spd, 3.2 + Math.random() * 4, Math.sin(angle) * spd);
-                mesh.userData.life = 1.0;
-                stage3D.scene.add(mesh); stage3D.particles.push(mesh);
-            }
-        }
-
-        function setupUnified3DModalStage({ archetype, primaryHex, secondaryHex, count = 1, promptText, feedbackText, speakFn }) {
-            stop3DStage();
-            const visualBox = document.getElementById('modal-visual');
-            const promptEl = document.getElementById('modal-game-prompt');
-            const feedbackEl = document.getElementById('modal-action-feedback');
-            visualBox.innerHTML = ''; feedbackEl.textContent = ''; promptEl.innerHTML = promptText || '👆 ৩ডি খেলনায় ট্যাপ করে অ্যাকশন দেখো বা আঙুল দিয়ে ঘুরাও!';
-
-            stage3D.archetype = archetype || 'child'; stage3D.currentSpeakFn = speakFn;
-            const width = visualBox.clientWidth || 420; const height = visualBox.clientHeight || 260;
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100); camera.position.set(0, 0.75, 5.2); camera.lookAt(0,0,0);
-            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setSize(width, height); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); visualBox.appendChild(renderer.domElement);
-
-            scene.add(new THREE.AmbientLight(0xffffff, 0.85));
-            const keyLight = new THREE.DirectionalLight(0xfffbeb, 1.0); keyLight.position.set(4,8,6); scene.add(keyLight);
-            const rimLight = new THREE.PointLight(0x38bdf8, 0.75, 15); rimLight.position.set(-4,3,-3); scene.add(rimLight);
-
-            const island = new THREE.Mesh(new THREE.CylinderGeometry(3.1, 2.5, 0.45, 36), new THREE.MeshPhongMaterial({ color: 0x4ade80, shininess: 30 })); island.position.set(0,-1.55,0); scene.add(island);
-            const actorGroup = new THREE.Group(); scene.add(actorGroup);
-
-            stage3D.scene = scene; stage3D.camera = camera; stage3D.renderer = renderer; stage3D.actorGroup = actorGroup; stage3D.clock = new THREE.Clock(); stage3D.particles = []; stage3D.actionState = 'idle'; stage3D.actionTimer = 0; stage3D.userRotY = 0;
-
-            buildUniversal3DActor(actorGroup, stage3D.archetype, primaryHex, secondaryHex, count);
-
-            let startX = 0; let downTime = 0;
-            const onDown = (x) => { stage3D.isDragging = true; stage3D.prevX = x; startX = x; downTime = Date.now(); };
-            const onMove = (x) => { if (!stage3D.isDragging) return; stage3D.userRotY += (x - stage3D.prevX) * 0.014; stage3D.prevX = x; };
-            const onUp = (x) => {
-                if (!stage3D.isDragging) return;
-                stage3D.isDragging = false;
-                if (Math.abs(x - startX) < 24 || Date.now() - downTime < 300) {
-                    triggerModal3DAction(feedbackText);
-                }
-            };
-
-            renderer.domElement.addEventListener('mousedown', e => onDown(e.clientX));
-            window.addEventListener('mousemove', e => onMove(e.clientX));
-            window.addEventListener('mouseup', e => onUp(e.clientX));
-            renderer.domElement.addEventListener('touchstart', e => { if (e.touches[0]) onDown(e.touches[0].clientX); }, { passive: true });
-            renderer.domElement.addEventListener('touchmove', e => { if (e.touches[0]) onMove(e.touches[0].clientX); }, { passive: true });
-            renderer.domElement.addEventListener('touchend', e => { const x = e.changedTouches[0] ? e.changedTouches[0].clientX : startX; onUp(x); });
-            document.getElementById('modal-action-btn').onclick = () => triggerModal3DAction(feedbackText);
-
-            const raycaster = new THREE.Raycaster();
-            const pointer = new THREE.Vector2();
-            function handlePointerEvent(clientX, clientY) {
-                const rect = renderer.domElement.getBoundingClientRect();
-                pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-                pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-                raycaster.setFromCamera(pointer, camera);
-                const intersects = raycaster.intersectObjects(actorGroup.children, true);
-                if (intersects.length > 0) {
-                    triggerModal3DAction(feedbackText);
-                    return true;
-                }
-                return false;
-            }
-            renderer.domElement.addEventListener('click', (e) => { handlePointerEvent(e.clientX, e.clientY); });
-
-            function animateLoop() {
-                stage3D.animId = requestAnimationFrame(animateLoop);
-                const dt = Math.min(stage3D.clock.getDelta(), 0.1); const t = stage3D.clock.getElapsedTime();
-
-                for (let i = stage3D.particles.length - 1; i >= 0; i--) {
-                    const p = stage3D.particles[i];
-                    p.position.addScaledVector(p.userData.vel, dt);
-                    p.userData.vel.y -= 9.5 * dt;
-                    p.userData.life -= dt * 1.15;
-                    p.scale.setScalar(Math.max(0.01, p.userData.life));
-                    if (p.userData.life <= 0) { scene.remove(p); stage3D.particles.splice(i, 1); }
-                }
-
-                stage3D.wings.forEach(w => {
-                    const flap = Math.sin(t * 11) * 0.55;
-                    w.wingL.rotation.z = flap;
-                    w.wingR.rotation.z = -flap;
-                });
-
-                stage3D.wheels.forEach(wh => { wh.rotation.z -= dt * 5; });
-
-                if (stage3D.archetype === 'python' && stage3D.snakeSegments.length > 0) {
-                    const head = stage3D.snakeSegments[0];
-                    if (stage3D.actionState === 'idle') {
-                        const chargeZ = ((t * 1.4) % 3.0) - 1.3;
-                        stage3D.snakeSegments.forEach((seg, idx) => {
-                            const lag = idx * 0.22;
-                            seg.position.set(Math.sin(t * 5.5 - lag) * 0.48, Math.abs(Math.cos(t * 5.5 - lag)) * 0.18 - 0.65 + (idx === 0 ? 0.2 : 0), chargeZ - idx * 0.22);
-                        });
-                        actorGroup.rotation.y = stage3D.userRotY;
-                        if (head) head.rotation.z = Math.sin(t * 8) * 0.18;
-                    } else {
-                        stage3D.actionTimer += dt;
-                        actorGroup.position.y = Math.sin(stage3D.actionTimer * Math.PI) * 2.4;
-                        actorGroup.rotation.y += dt * 14;
-                        actorGroup.rotation.x += dt * 10;
-                        if (head) head.rotation.z = Math.sin(stage3D.actionTimer * 30) * 0.28;
-                        if (stage3D.actionTimer >= 0.9) { stage3D.actionState = 'idle'; actorGroup.position.set(0,0,0); actorGroup.rotation.set(0, stage3D.userRotY, 0); }
-                    }
-                } else {
-                    if (stage3D.actionState === 'idle') {
-                        actorGroup.position.y = Math.sin(t * 3.2) * 0.18;
-                        actorGroup.rotation.y = Math.sin(t * 1.4) * 0.35 + stage3D.userRotY;
-                        actorGroup.children.forEach((child, idx) => {
-                            if (actorGroup.children.length > 1) { child.position.y += Math.sin(t * 4 + idx) * 0.003; child.rotation.y = Math.sin(t * 2 + idx) * 0.25; }
-                        });
-                    } else {
-                        stage3D.actionTimer += dt; actorGroup.position.y = Math.sin(stage3D.actionTimer * Math.PI) * 1.9; actorGroup.rotation.y += dt * 12;
-                        if (stage3D.actionTimer >= 0.85) { stage3D.actionState = 'idle'; actorGroup.position.y = 0; }
-                    }
-                }
-
-                renderer.render(scene, camera);
-            }
-            animateLoop();
-        }
-
-        function triggerModal3DAction(customFeedback) {
-            playAdventureBoingSound();
-            trigger3DExplosion();
-            stage3D.actionState = 'jump'; stage3D.actionTimer = 0;
-
-            const visualBox = document.getElementById('modal-visual');
-            const badge = document.createElement('div');
-            badge.className = 'absolute z-30 pointer-events-none font-extrabold text-base sm:text-xl text-white bg-gradient-to-r from-rose-500 to-amber-500 border-4 border-white px-4 py-1 rounded-full shadow-xl animate-burst';
-            badge.style.left = '35%'; badge.style.top = '25%'; badge.textContent = '✨ শাবাশ! +১ ⭐';
-            visualBox.appendChild(badge); setTimeout(() => badge.remove(), 850);
-
-            document.getElementById('modal-action-feedback').textContent = customFeedback || '🎉 দারুণ! ৩ডি চরিত্রটি আনন্দে লাফ দিয়েছে! (+১ ⭐)';
-            addStar(1);
-            if (typeof stage3D.currentSpeakFn === 'function') stage3D.currentSpeakFn();
-        }
-
-        const banglaData = {
-            swarabarna: [
-                { id: 'bn_s1', letter: 'অ', spokenLetter: 'স্বরে অ', word: 'অজগর', sentence: 'অ-তে অজগরটি আসছে তেড়ে', spokenSentence: 'স্বরে অ, স্বরে অ তে অজগর, অজগরটি আসছে তেড়ে', archetype: 'python', pHex: '#22c55e', sHex: '#15803d', prompt: '🐍 ৩ডি অজগরটি তেড়ে আসছে! গায়ে ট্যাপ করে সেটাকে ছুঁড়ে দাও!' },
-                { id: 'bn_s2', letter: 'আ', spokenLetter: 'স্বরে আ', word: 'আম', sentence: 'আ-তে আমটি আমি খাব পেড়ে', spokenSentence: 'স্বরে আ, স্বরে আ তে আম, আমটি আমি খাব পেড়ে', archetype: 'fruit', pHex: '#f59e0b', sHex: '#ea580c', prompt: '🥭 ৩ডি পাকা আমটিতে ট্যাপ করে পেড়ে নাও!' },
-                { id: 'bn_s3', letter: 'ই', spokenLetter: 'হ্রস্ব ই', word: 'ইঁদুর', sentence: 'ই-তে ইঁদুর ছানা ভয়ে মরে', spokenSentence: 'হ্রস্ব ই, হ্রস্ব ই তে ইঁদুর, ইঁদুর ছানা ভয়ে মরে', archetype: 'mouse', pHex: '#94a3b8', sHex: '#475569', prompt: '🐭 ৩ডি ইঁদুর ছানাকে ছুঁয়ে দেখো কেমন লাফ দেয়!' },
-                { id: 'bn_s4', letter: 'ঈ', spokenLetter: 'দীর্ঘ ঈ', word: 'ঈগল', sentence: 'ঈ-তে ঈগল পাখি শিকার ধরে', spokenSentence: 'দীর্ঘ ঈ, দীর্ঘ ঈ তে ঈগল, ঈগল পাখি শিকার ধরে', archetype: 'bird', pHex: '#92400e', sHex: '#f59e0b', prompt: '🦅 ৩ডি ঈগল পাখির গায়ে ট্যাপ করো, দেখো কেমন উড়ে!' },
-                { id: 'bn_s5', letter: 'উ', spokenLetter: 'হ্রস্ব উ', word: 'উট', sentence: 'উ-তে উট চলেছে মুখটি তুলে', spokenSentence: 'হ্রস্ব উ, হ্রস্ব উ তে উট, উট চলেছে মুখটি তুলে', archetype: 'quadruped', pHex: '#d97706', sHex: '#92400e' },
-                { id: 'bn_s6', letter: 'ঊ', spokenLetter: 'দীর্ঘ ঊ', word: 'ঊষা', sentence: 'ঊ-তে ঊষা হাসে পূব আকাশে', spokenSentence: 'দীর্ঘ ঊ, দীর্ঘ ঊ তে ঊষা, ঊষা হাসে পূব আকাশে', archetype: 'sun', pHex: '#fb7185', sHex: '#f59e0b' },
-                { id: 'bn_s7', letter: 'ঋ', spokenLetter: 'ঋ', word: 'ঋতু', sentence: 'ঋ-তে বাংলাদেশের ছয়টি ঋতু', spokenSentence: 'ঋ, ঋ তে ঋতু, বাংলাদেশের ছয়টি ঋতু', archetype: 'flower', pHex: '#38bdf8', sHex: '#facc15' },
-                { id: 'bn_s8', letter: 'এ', spokenLetter: 'এ', word: 'একতারা', sentence: 'এ-তে একতারাটি বাজে বেশ', spokenSentence: 'এ, এ তে একতারা, একতারাটি বাজে বেশ', archetype: 'child', pHex: '#a3e635', sHex: '#15803d' },
-                { id: 'bn_s9', letter: 'ঐ', spokenLetter: 'ঐ', word: 'ঐরাবত', sentence: 'ঐ-তে ঐরাবতটি আসছে দেখো', spokenSentence: 'ঐ, ঐ তে ঐরাবত, ঐরাবতটি আসছে দেখো', archetype: 'quadruped', pHex: '#6366f1', sHex: '#4338ca' },
-                { id: 'bn_s10', letter: 'ও', spokenLetter: 'ও', word: 'ওলকপি', sentence: 'ও-তে ওলকপি খাও মজা করে', spokenSentence: 'ও, ও তে ওলকপি, ওলকপি খাও মজা করে', archetype: 'fruit', pHex: '#34d399', sHex: '#059669' },
-                { id: 'bn_s11', letter: 'ঔ', spokenLetter: 'ঔ', word: 'ঔষধ', sentence: 'ঔ-তে ঔষধ খাব অসুখ হলে', spokenSentence: 'ঔ, ঔ তে ঔষধ, ঔষধ খাব অসুখ হলে', archetype: 'child', pHex: '#ec4899', sHex: '#be185d' }
-            ],
-            byanjanbarna: [
-                { id: 'bn_b1', letter: 'ক', spokenLetter: 'ক', word: 'কলা', sentence: 'ক-তে কলা খাই শক্তি পাই', spokenSentence: 'ক, ক তে কলা, কলা খাই শক্তি পাই', archetype: 'fruit', pHex: '#facc15', sHex: '#ca8a04' },
-                { id: 'bn_b2', letter: 'খ', spokenLetter: 'খ', word: 'খরগোশ', sentence: 'খ-তে খরগোশ ছানা লাফিয়ে চলে', spokenSentence: 'খ, খ তে খরগোশ, খরগোশ ছানা লাফিয়ে চলে', archetype: 'quadruped', pHex: '#f472b6', sHex: '#db2777' },
-                { id: 'bn_b3', letter: 'গ', spokenLetter: 'গ', word: 'গরু', sentence: 'গ-তে গরু দেয় মিষ্টি দুধ', spokenSentence: 'গ, গ তে গরু, গরু দেয় মিষ্টি দুধ', archetype: 'quadruped', pHex: '#fb923c', sHex: '#c2410c' },
-                { id: 'bn_b4', letter: 'ঘ', spokenLetter: 'ঘ', word: 'ঘোড়া', sentence: 'ঘ-তে ঘোড়া ছোটে টগবগিয়ে', spokenSentence: 'ঘ, ঘ তে ঘোড়া, ঘোড়া ছোটে টগবগিয়ে', archetype: 'quadruped', pHex: '#b45309', sHex: '#78350f' },
-                { id: 'bn_b5', letter: 'চ', spokenLetter: 'চ', word: 'চাঁদ', sentence: 'চ-তে চাঁদ মামা দেয় আলো', spokenSentence: 'চ, চ তে চাঁদ, চাঁদ মামা দেয় আলো', archetype: 'moon', pHex: '#818cf8', sHex: '#fde047' },
-                { id: 'bn_b6', letter: 'ছ', spokenLetter: 'ছ', word: 'ছাতা', sentence: 'ছ-তে ছাতা মাথায় বৃষ্টিতে যাই', spokenSentence: 'ছ, ছ তে ছাতা, ছাতা মাথায় বৃষ্টিতে যাই', archetype: 'flower', pHex: '#38bdf8', sHex: '#0284c7' },
-                { id: 'bn_b7', letter: 'জ', spokenLetter: 'বর্গীয় জ', word: 'জাহাজ', sentence: 'জ-তে জাহাজ ভাসে সাগর জলে', spokenSentence: 'বর্গীয় জ, বর্গীয় জ তে জাহাজ, জাহাজ ভাসে সাগর জলে', archetype: 'boat', pHex: '#06b6d4', sHex: '#0e7490' },
-                { id: 'bn_b8', letter: 'ঝ', spokenLetter: 'ঝ', word: 'ঝুড়ি', sentence: 'ঝ-তে ঝুড়ি ভরা তাজা ফল', spokenSentence: 'ঝ, ঝ তে ঝুড়ি, ঝুড়ি ভরা তাজা ফল', archetype: 'fruit', pHex: '#f97316', sHex: '#c2410c' },
-                { id: 'bn_b9', letter: 'ট', spokenLetter: 'ট', word: 'টিয়া', sentence: 'ট-তে টিয়া পাখির ঠোঁটটি লাল', spokenSentence: 'ট, ট তে টিয়া, টিয়া পাখির ঠোঁটটি লাল', archetype: 'bird', pHex: '#22c55e', sHex: '#ef4444' },
-                { id: 'bn_b10', letter: 'ড', spokenLetter: 'ড', word: 'ডাব', sentence: 'ড-তে ডাবের পানি মিষ্টি খুব', spokenSentence: 'ড, ড তে ডাব, ডাবের পানি মিষ্টি খুব', archetype: 'fruit', pHex: '#10b981', sHex: '#047857' },
-                { id: 'bn_b11', letter: 'ত', spokenLetter: 'ত', word: 'তরমুজ', sentence: 'ত-তে তরমুজ খাব গরমের দিনে', spokenSentence: 'ত, ত তে তরমুজ, তরমুজ খাব গরমের দিনে', archetype: 'fruit', pHex: '#f43f5e', sHex: '#15803d' },
-                { id: 'bn_b12', letter: 'দ', spokenLetter: 'দ', word: 'দোয়েল', sentence: 'দ-তে দোয়েল আমাদের জাতীয় পাখি', spokenSentence: 'দ, দ তে দোয়েল, দোয়েল আমাদের জাতীয় পাখি', archetype: 'bird', pHex: '#3b82f6', sHex: '#1e3a8a' },
-                { id: 'bn_b13', letter: 'প', spokenLetter: 'প', word: 'প্রজাপতি', sentence: 'প-তে প্রজাপতির রঙিন ডানা', spokenSentence: 'প, প তে প্রজাপতি, প্রজাপতির রঙিন ডানা', archetype: 'butterfly', pHex: '#d946ef', sHex: '#facc15' },
-                { id: 'bn_b14', letter: 'ফ', spokenLetter: 'ফ', word: 'ফুল', sentence: 'ফ-তে বাগানে ফোটে সুন্দর ফুল', spokenSentence: 'ফ, ফ তে ফুল, বাগানে ফোটে সুন্দর ফুল', archetype: 'flower', pHex: '#fb7185', sHex: '#facc15' },
-                { id: 'bn_b15', letter: 'ব', spokenLetter: 'ব', word: 'বই', sentence: 'ব-তে বই পড়ি জ্ঞান বাড়াই', spokenSentence: 'ব, ব তে বই, বই পড়ি জ্ঞান বাড়াই', archetype: 'child', pHex: '#14b8a6', sHex: '#0f766e' },
-                { id: 'bn_b16', letter: 'ভ', spokenLetter: 'ভ', word: 'ভালুক', sentence: 'ভ-তে ভালুক নাচে তা ধিন ধিন', spokenSentence: 'ভ, ভ তে ভালুক, ভালুক নাচে তা ধিন ধিন', archetype: 'quadruped', pHex: '#92400e', sHex: '#f59e0b' },
-                { id: 'bn_b17', letter: 'ম', spokenLetter: 'ম', word: 'মাছ', sentence: 'ম-তে মাছ সাঁতার কাটে পানিতে', spokenSentence: 'ম, ম তে মাছ, মাছ সাঁতার কাটে পানিতে', archetype: 'fish', pHex: '#38bdf8', sHex: '#f97316' },
-                { id: 'bn_b18', letter: 'র', spokenLetter: 'বয় শূন্য র', word: 'রাজহাঁস', sentence: 'র-তে রাজহাঁস পুকুরে ভাসে', spokenSentence: 'বয় শূন্য র, র তে রাজহাঁস, রাজহাঁস পুকুরে ভাসে', archetype: 'bird', pHex: '#f472b6', sHex: '#fbbf24' },
-                { id: 'bn_b19', letter: 'শ', spokenLetter: 'তালব্য শ', word: 'শাপলা', sentence: 'শ-তে শাপলা আমাদের জাতীয় ফুল', spokenSentence: 'তালব্য শ, শ তে শাপলা, শাপলা আমাদের জাতীয় ফুল', archetype: 'flower', pHex: '#ec4899', sHex: '#fde047' },
-                { id: 'bn_b20', letter: 'হ', spokenLetter: 'হ', word: 'হাতি', sentence: 'হ-তে হাতির আছে লম্বা শুঁড়', spokenSentence: 'হ, হ তে হাতি, হাতির আছে লম্বা শুঁড়', archetype: 'quadruped', pHex: '#8b5cf6', sHex: '#5b21b6' }
-            ]
-        };
-
-        const englishData = [
-            { id: 'en_A', letter: 'A a', word: 'Apple', bnMeaning: 'আপেল', speech: 'A! A for Apple.', bnSpeech: 'মানে লাল আপেল', archetype: 'fruit', pHex: '#ef4444', sHex: '#b91c1c' },
-            { id: 'en_B', letter: 'B b', word: 'Ball', bnMeaning: 'বল', speech: 'B! B for Ball.', bnSpeech: 'মানে খেলার বল', archetype: 'sun', pHex: '#3b82f6', sHex: '#1d4ed8' },
-            { id: 'en_C', letter: 'C c', word: 'Cat', bnMeaning: 'বিড়াল', speech: 'C! C for Cat.', bnSpeech: 'মানে বিড়াল ছানা', archetype: 'quadruped', pHex: '#f59e0b', sHex: '#b45309' },
-            { id: 'en_D', letter: 'D d', word: 'Dog', bnMeaning: 'কুকুর', speech: 'D! D for Dog.', bnSpeech: 'মানে কুকুর ছানা', archetype: 'quadruped', pHex: '#10b981', sHex: '#047857' },
-            { id: 'en_E', letter: 'E e', word: 'Elephant', bnMeaning: 'হাতি', speech: 'E! E for Elephant.', bnSpeech: 'মানে বড় হাতি', archetype: 'quadruped', pHex: '#6366f1', sHex: '#4338ca' },
-            { id: 'en_F', letter: 'F f', word: 'Fish', bnMeaning: 'মাছ', speech: 'F! F for Fish.', bnSpeech: 'মানে রঙিন মাছ', archetype: 'fish', pHex: '#06b6d4', sHex: '#f97316' },
-            { id: 'en_G', letter: 'G g', word: 'Grapes', bnMeaning: 'আঙুর', speech: 'G! G for Grapes.', bnSpeech: 'মানে আঙুর ফল', archetype: 'fruit', pHex: '#a855f7', sHex: '#6b21a8' },
-            { id: 'en_H', letter: 'H h', word: 'Hen', bnMeaning: 'মুরগি', speech: 'H! H for Hen.', bnSpeech: 'মানে মুরগি', archetype: 'bird', pHex: '#f97316', sHex: '#dc2626' },
-            { id: 'en_I', letter: 'I i', word: 'Ice Cream', bnMeaning: 'আইসক্রিম', speech: 'I! I for Ice Cream.', bnSpeech: 'মানে মজার আইসক্রিম', archetype: 'child', pHex: '#ec4899', sHex: '#db2777' },
-            { id: 'en_J', letter: 'J j', word: 'Jug', bnMeaning: 'জগ', speech: 'J! J for Jug.', bnSpeech: 'মানে পানির জগ', archetype: 'child', pHex: '#14b8a6', sHex: '#0f766e' },
-            { id: 'en_K', letter: 'K k', word: 'Kite', bnMeaning: 'ঘুড়ি', speech: 'K! K for Kite.', bnSpeech: 'মানে রঙিন ঘুড়ি', archetype: 'butterfly', pHex: '#84cc16', sHex: '#f59e0b' },
-            { id: 'en_L', letter: 'L l', word: 'Lion', bnMeaning: 'সিংহ', speech: 'L! L for Lion.', bnSpeech: 'মানে বনের রাজা সিংহ', archetype: 'quadruped', pHex: '#eab308', sHex: '#b45309' },
-            { id: 'en_M', letter: 'M m', word: 'Mango', bnMeaning: 'আম', speech: 'M! M for Mango.', bnSpeech: 'মানে পাকা আম', archetype: 'fruit', pHex: '#f59e0b', sHex: '#16a34a' },
-            { id: 'en_N', letter: 'N n', word: 'Nest', bnMeaning: 'পাখির বাসা', speech: 'N! N for Nest.', bnSpeech: 'মানে পাখির বাসা', archetype: 'bird', pHex: '#10b981', sHex: '#047857' },
-            { id: 'en_O', letter: 'O o', word: 'Orange', bnMeaning: 'কমলা', speech: 'O! O for Orange.', bnSpeech: 'মানে কমলালেবু', archetype: 'fruit', pHex: '#f97316', sHex: '#ea580c' },
-            { id: 'en_P', letter: 'P p', word: 'Parrot', bnMeaning: 'টিয়া পাখি', speech: 'P! P for Parrot.', bnSpeech: 'মানে টিয়া পাখি', archetype: 'bird', pHex: '#22c55e', sHex: '#ef4444' },
-            { id: 'en_Q', letter: 'Q q', word: 'Queen', bnMeaning: 'রানি', speech: 'Q! Q for Queen.', bnSpeech: 'মানে রানি', archetype: 'child', pHex: '#ec4899', sHex: '#eab308' },
-            { id: 'en_R', letter: 'R r', word: 'Rabbit', bnMeaning: 'খরগোশ', speech: 'R! R for Rabbit.', bnSpeech: 'মানে খরগোশ ছানা', archetype: 'quadruped', pHex: '#fb7185', sHex: '#e11d48' },
-            { id: 'en_S', letter: 'S s', word: 'Sun', bnMeaning: 'সূর্য', speech: 'S! S for Sun.', bnSpeech: 'মানে সকালের সূর্য', archetype: 'sun', pHex: '#facc15', sHex: '#f97316' },
-            { id: 'en_T', letter: 'T t', word: 'Tiger', bnMeaning: 'বাঘ', speech: 'T! T for Tiger.', bnSpeech: 'মানে বাঘ মামা', archetype: 'quadruped', pHex: '#f97316', sHex: '#7c2d12' },
-            { id: 'en_U', letter: 'U u', word: 'Umbrella', bnMeaning: 'ছাতা', speech: 'U! U for Umbrella.', bnSpeech: 'মানে রঙিন ছাতা', archetype: 'flower', pHex: '#38bdf8', sHex: '#4f46e5' },
-            { id: 'en_V', letter: 'V v', word: 'Van', bnMeaning: 'গাড়ি', speech: 'V! V for Van.', bnSpeech: 'মানে ভ্যান গাড়ি', archetype: 'vehicle', pHex: '#06b6d4', sHex: '#f59e0b' },
-            { id: 'en_W', letter: 'W w', word: 'Watch', bnMeaning: 'ঘড়ি', speech: 'W! W for Watch.', bnSpeech: 'মানে হাতঘড়ি', archetype: 'sun', pHex: '#6366f1', sHex: '#312e81' },
-            { id: 'en_X', letter: 'X x', word: 'Xylophone', bnMeaning: 'জাইলোফোন', speech: 'X! X for Xylophone.', bnSpeech: 'মানে গানের বাজনা', archetype: 'child', pHex: '#8b5cf6', sHex: '#ec4899' },
-            { id: 'en_Y', letter: 'Y y', word: 'Yo-Yo', bnMeaning: 'ইয়ো-ইয়ো', speech: 'Y! Y for Yo Yo.', bnSpeech: 'মানে ইয়ো ইয়ো খেলনা', archetype: 'sun', pHex: '#f43f5e', sHex: '#fbbf24' },
-            { id: 'en_Z', letter: 'Z z', word: 'Zebra', bnMeaning: 'জেব্রা', speech: 'Z! Z for Zebra.', bnSpeech: 'মানে জেব্রা', archetype: 'quadruped', pHex: '#64748b', sHex: '#1e293b' }
-        ];
-
-        const numbersData = [
-            { id: 'num_1', count: 1, bnDigit: '১', bnWord: 'এক', enDigit: '1', enWord: 'One', itemBn: '১টি সূর্য', spokenBn: 'এক, আকাশে একটি উজ্জ্বল সূর্য', itemEn: '1 Sun', spokenEn: 'One! One bright Sun.', archetype: 'sun', pHex: '#facc15', sHex: '#f97316' },
-            { id: 'num_2', count: 2, bnDigit: '২', bnWord: 'দুই', enDigit: '2', enWord: 'Two', itemBn: '২টি খরগোশ', spokenBn: 'দুই, এখানে দুইটি খরগোশ ছানা', itemEn: '2 Rabbits', spokenEn: 'Two! Two cute Rabbits.', archetype: 'quadruped', pHex: '#f472b6', sHex: '#db2777' },
-            { id: 'num_3', count: 3, bnDigit: '৩', bnWord: 'তিন', enDigit: '3', enWord: 'Three', itemBn: '৩টি আপেল', spokenBn: 'তিন, এখানে তিনটি লাল আপেল', itemEn: '3 Apples', spokenEn: 'Three! Three red Apples.', archetype: 'fruit', pHex: '#ef4444', sHex: '#b91c1c' },
-            { id: 'num_4', count: 4, bnDigit: '৪', bnWord: 'চার', enDigit: '4', enWord: 'Four', itemBn: '৪টি গাড়ি', spokenBn: 'চার, এখানে চারটি সুন্দর গাড়ি', itemEn: '4 Cars', spokenEn: 'Four! Four little Cars.', archetype: 'vehicle', pHex: '#3b82f6', sHex: '#f59e0b' },
-            { id: 'num_5', count: 5, bnDigit: '৫', bnWord: 'পাঁচ', enDigit: '5', enWord: 'Five', itemBn: '৫টি তারা', spokenBn: 'পাঁচ, আকাশে পাঁচটি তারা', itemEn: '5 Stars', spokenEn: 'Five! Five shining Stars.', archetype: 'star', pHex: '#a855f7', sHex: '#facc15' },
-            { id: 'num_6', count: 6, bnDigit: '৬', bnWord: 'ছয়', enDigit: '6', enWord: 'Six', itemBn: '৬টি পাখি', spokenBn: 'ছয়, এখানে ছয়টি পাখি', itemEn: '6 Birds', spokenEn: 'Six! Six happy Birds.', archetype: 'bird', pHex: '#06b6d4', sHex: '#f59e0b' },
-            { id: 'num_7', count: 7, bnDigit: '৭', bnWord: 'সাত', enDigit: '7', enWord: 'Seven', itemBn: '৭টি ফুল', spokenBn: 'সাত, বাগানে সাতটি রঙিন ফুল', itemEn: '7 Flowers', spokenEn: 'Seven! Seven colorful Flowers.', archetype: 'flower', pHex: '#ec4899', sHex: '#facc15' },
-            { id: 'num_8', count: 8, bnDigit: '৮', bnWord: 'আট', enDigit: '8', enWord: 'Eight', itemBn: '৮টি আম', spokenBn: 'আট, এখানে আটটি পাকা আম', itemEn: '8 Mangoes', spokenEn: 'Eight! Eight sweet Mangoes.', archetype: 'fruit', pHex: '#84cc16', sHex: '#15803d' },
-            { id: 'num_9', count: 9, bnDigit: '৯', bnWord: 'নয়', enDigit: '9', enWord: 'Nine', itemBn: '৯টি প্রজাপতি', spokenBn: 'নয়, এখানে নয়টি রঙিন প্রজাপতি', itemEn: '9 Butterflies', spokenEn: 'Nine! Nine pretty Butterflies.', archetype: 'butterfly', pHex: '#6366f1', sHex: '#f43f5e' },
-            { id: 'num_10', count: 10, bnDigit: '১০', bnWord: 'দশ', enDigit: '10', enWord: 'Ten', itemBn: '১০টি মাছ', spokenBn: 'দশ, পানিতে দশটি মাছ সাঁতার কাটছে', itemEn: '10 Fishes', spokenEn: 'Ten! Ten little Fishes.', archetype: 'fish', pHex: '#f97316', sHex: '#06b6d4' }
-        ];
-
-        const sentencesData = [
-            { id: 'sen_1', badge: '১', bn: 'সুপ্রভাত আম্মু ও আব্বু!', en: 'Good Morning Mommy and Daddy!', archetype: 'sun', pHex: '#f59e0b', sHex: '#ea580c' },
-            { id: 'sen_2', badge: '২', bn: 'আম্মু, আমি পানি খাব।', en: 'Mommy, I want to drink water.', archetype: 'child', pHex: '#0ea5e9', sHex: '#0284c7' },
-            { id: 'sen_3', badge: '৩', bn: 'আমার ক্ষুধা লেগেছে, খাবার দাও।', en: 'I am hungry, please give me food.', archetype: 'fruit', pHex: '#f43f5e', sHex: '#e11d48' },
-            { id: 'sen_4', badge: '৪', bn: 'আম্মু, আমার কাছে আসো।', en: 'Come to me, Mommy.', archetype: 'child', pHex: '#ec4899', sHex: '#db2777' },
-            { id: 'sen_5', badge: '৫', bn: 'তোমাকে অনেক ধন্যবাদ!', en: 'Thank you very much!', archetype: 'flower', pHex: '#10b981', sHex: '#059669' },
-            { id: 'sen_6', badge: '৬', bn: 'চলো এখন খেলতে যাই!', en: 'Let us go and play now!', archetype: 'quadruped', pHex: '#8b5cf6', sHex: '#6d28d9' },
-            { id: 'sen_7', badge: '৭', bn: 'আম্মু আব্বু, আমি তোমাদের ভালোবাসি।', en: 'Mommy and Daddy, I love you so much.', archetype: 'butterfly', pHex: '#ef4444', sHex: '#f59e0b' },
-            { id: 'sen_8', badge: '৮', bn: 'আমি এখন ঘুমাব, শুভ রাত্রি।', en: 'I will go to sleep now, Good Night.', archetype: 'moon', pHex: '#6366f1', sHex: '#facc15' },
-            { id: 'sen_9', badge: '৯', bn: 'প্রতিদিন দাঁত ব্রাশ করা ভালো অভ্যাস।', en: 'Brushing teeth every day is a good habit.', archetype: 'child', pHex: '#14b8a6', sHex: '#0d9488' },
-            { id: 'sen_10', badge: '১০', bn: 'আমাকে একটা মজার গল্প শোনাও।', en: 'Please tell me a funny story.', archetype: 'bird', pHex: '#eab308', sHex: '#ca8a04' }
-        ];
-
-        const rhymesData = [
-            { id: 'rhyme_bn_1', lang: 'bn', title: 'আতা গাছে তোতা পাখি', archetype: 'bird', pHex: '#10b981', sHex: '#ef4444', lines: ['আতা গাছে তোতা পাখি,', 'ডালিম গাছে মৌ।', 'এত ডাকি তবু কথা,', 'কও না কেন বউ?'], melody: [523,587,659,523,523,587,659,523,659,698,784,659,698,784] },
-            { id: 'rhyme_bn_2', lang: 'bn', title: 'আয় আয় চাঁদ মামা', archetype: 'moon', pHex: '#6366f1', sHex: '#fde047', lines: ['আয় আয় চাঁদ মামা টিপ দিয়ে যা,', 'চাঁদের কপালে চাঁদ টিপ দিয়ে যা।', 'ধান ভানলে কুঁড়ো দেব, মাছ কাটলে মুড়ো দেব,', 'কালো গাইয়ের দুধ দেব, দুধ খাবার বাটি দেব।'], melody: [392,440,523,587,523,440,392,440,523,587,523,440,392] },
-            { id: 'rhyme_bn_3', lang: 'bn', title: 'হাট্টিমাটিম টিম', archetype: 'quadruped', pHex: '#f59e0b', sHex: '#ea580c', lines: ['হাট্টিমাটিম টিম,', 'তারা মাঠে পাড়ে ডিম।', 'তাদের খাড়া দুটো শিং,', 'তারা হাট্টিমাটিম টিম!'], melody: [523,659,587,698,659,784,523,659,587,698,784,523] },
-            { id: 'rhyme_en_1', lang: 'en', title: 'Twinkle Twinkle Little Star', archetype: 'star', pHex: '#0ea5e9', sHex: '#fde047', lines: ['Twinkle, twinkle, little star,', 'How I wonder what you are!', 'Up above the world so high,', 'Like a diamond in the sky.'], melody: [523,523,784,784,880,880,784,698,698,659,659,587,587,523] },
-            { id: 'rhyme_en_2', lang: 'en', title: 'Johny Johny Yes Papa', archetype: 'child', pHex: '#ec4899', sHex: '#f43f5e', lines: ['Johny, Johny! Yes, Papa?', 'Eating sugar? No, Papa!', 'Telling lies? No, Papa!', 'Open your mouth — Ha, ha, ha!'], melody: [523,587,659,784,659,587,523,523,587,659,784,880,784,523] },
-            { id: 'rhyme_en_3', lang: 'en', title: 'Baa Baa Black Sheep', archetype: 'quadruped', pHex: '#8b5cf6', sHex: '#6d28d9', lines: ['Baa, baa, black sheep, have you any wool?', 'Yes sir, yes sir, three bags full!', 'One for the master, one for the dame,', 'And one for the little boy who lives down the lane.'], melody: [523,523,784,784,880,987,1046,880,784,698,698,659,659,587,587,523] }
-        ];
-
-        const quizPool = [
-            { id: 'q1', nameBn: 'অজগর', nameEn: 'Python', archetype: 'python', pHex: '#22c55e', sHex: '#15803d' },
-            { id: 'q2', nameBn: 'আম', nameEn: 'Mango', archetype: 'fruit', pHex: '#f59e0b', sHex: '#ea580c' },
-            { id: 'q3', nameBn: 'ইঁদুর', nameEn: 'Mouse', archetype: 'mouse', pHex: '#94a3b8', sHex: '#475569' },
-            { id: 'q4', nameBn: 'ঈগল পাখি', nameEn: 'Eagle', archetype: 'bird', pHex: '#92400e', sHex: '#f59e0b' },
-            { id: 'q5', nameBn: 'বিড়াল ছানা', nameEn: 'Cat', archetype: 'quadruped', pHex: '#f59e0b', sHex: '#b45309' },
-            { id: 'q6', nameBn: 'মাছ', nameEn: 'Fish', archetype: 'fish', pHex: '#06b6d4', sHex: '#f97316' },
-            { id: 'q7', nameBn: 'প্রজাপতি', nameEn: 'Butterfly', archetype: 'butterfly', pHex: '#d946ef', sHex: '#facc15' },
-            { id: 'q8', nameBn: 'ফুল', nameEn: 'Flower', archetype: 'flower', pHex: '#ec4899', sHex: '#fde047' },
-            { id: 'q9', nameBn: 'গাড়ি', nameEn: 'Car', archetype: 'vehicle', pHex: '#3b82f6', sHex: '#f59e0b' },
-            { id: 'q10', nameBn: 'সূর্য', nameEn: 'Sun', archetype: 'sun', pHex: '#facc15', sHex: '#f97316' }
-        ];
-
-        let currentTab = 'bangla';
-        let banglaSubTab = 'swarabarna';
-        let numberLangMode = 'both';
-        let starScore = parseInt(localStorage.getItem('sonamoni_stars') || '0', 10);
-        let parentRecordMode = false;
-        let activeRecorder = null;
-        let activeRecordingId = null;
-        let currentQuizAnswer = null;
-        let melodyInterval = null;
-        let currentCloudAudio = null;
-        const customVoiceMap = {};
-        let audioCtx = null;
-        let availableVoices = [];
-
-        const customPronunciationMap = {
-            'অজগর': 'অজগর',
-            'অজগরটি': 'অজগরটি',
-            'এখানে': 'এখানে',
-            'তেড়ে': 'তেড়ে',
-            'অ': 'অ',
-            'আ': 'আ',
-            'ই': 'ই',
-            'ঈ': 'ঈ',
-            'উ': 'উ',
-            'ঊ': 'ঊ',
-            'ঋ': 'ঋ',
-            'এ': 'এ',
-            'ঐ': 'ঐ',
-            'ও': 'ও',
-            'ঔ': 'ঔ'
-        };
-
-        function normalizeBanglaTextForSpeech(rawText) {
-            if (!rawText || typeof rawText !== 'string') return '';
-            let t = rawText.trim();
-            t = t.replace(/অ-তে/g, 'অ তে').replace(/আ-তে/g, 'আ তে').replace(/ই-তে/g, 'ই তে').replace(/ঈ-তে/g, 'ঈ তে').replace(/উ-তে/g, 'উ তে').replace(/ঊ-তে/g, 'ঊ তে').replace(/ঋ-তে/g, 'ঋ তে').replace(/এ-তে/g, 'এ তে').replace(/ঐ-তে/g, 'ঐ তে').replace(/ও-তে/g, 'ও তে').replace(/ঔ-তে/g, 'ঔ তে').replace(/-তে/g, ' তে');
-            Object.keys(customPronunciationMap).forEach(k => { const safe = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); t = t.replace(new RegExp(`\\b${safe}\\b`, 'g'), customPronunciationMap[k]); });
-            t = t.replace(/[•।!]/g, ', ').replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
-            return t;
-        }
-
-        if ('speechSynthesis' in window) {
-            const loadVoices = () => { availableVoices = window.speechSynthesis.getVoices(); };
-            loadVoices(); window.speechSynthesis.onvoiceschanged = loadVoices;
-        }
-
-        function pickBanglaVoice() {
-            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
-            let v = availableVoices.find(v => v.lang && v.lang.toLowerCase().startsWith('bn')) || availableVoices.find(v => /bangla|bengali|bn/i.test(v.name));
-            if (!v) v = availableVoices.find(v => /bn-|bn_/.test(v.lang));
-            return v || null;
-        }
-
-        function speakWithBrowserTTS(cleanedText, lang = 'bn-BD', onDone = null) {
-            if (!('speechSynthesis' in window) || !cleanedText) { setSpeakingIndicator(false); if (onDone) onDone(); return; }
-            window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(cleanedText); utter.rate = 0.85; utter.pitch = 1.0;
-            if (lang.startsWith('bn')) { const bnVoice = pickBanglaVoice(); if (bnVoice) utter.voice = bnVoice; utter.lang = 'bn-BD'; }
-            else { const enVoice = availableVoices.find(v => v.lang && v.lang.startsWith('en') && /google|natural|alto|nessie|alloy/i.test(v.name)) || availableVoices.find(v => v.lang && v.lang.startsWith('en')); if (enVoice) utter.voice = enVoice; utter.lang = 'en-US'; }
-            setSpeakingIndicator(true);
-            utter.onend = () => { setSpeakingIndicator(false); if (onDone) onDone(); };
-            utter.onerror = () => { setSpeakingIndicator(false); if (onDone) onDone(); };
-            window.speechSynthesis.speak(utter);
-        }
-
-        function playCloudTTSStream(text, langCode, onEndCallback, onErrorCallback) {
-            const targetLang = langCode.startsWith('bn') ? 'bn' : 'en';
-            const encoded = encodeURIComponent(text);
-            const urls = [
-                `https://translate.googleapis.com/translate_tts?ie=UTF-8&client=gtx&tl=${targetLang}&q=${encoded}`,
-                `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${targetLang}&q=${encoded}`
-            ];
-            let attemptIndex = 0;
-            function tryNextUrl() {
-                if (attemptIndex >= urls.length) { setSpeakingIndicator(false); if (onErrorCallback) onErrorCallback(); return; }
-                try {
-                    if (currentCloudAudio) { currentCloudAudio.pause(); currentCloudAudio.src = ''; }
-                    const audio = new Audio(); audio.referrerPolicy = 'no-referrer'; audio.crossOrigin = 'anonymous'; audio.src = urls[attemptIndex++]; currentCloudAudio = audio; setSpeakingIndicator(true);
-                    audio.onended = () => { setSpeakingIndicator(false); if (onEndCallback) onEndCallback(); };
-                    audio.onerror = () => tryNextUrl();
-                    const p = audio.play(); if (p !== undefined) p.catch(() => tryNextUrl());
-                } catch (e) { tryNextUrl(); }
-            }
-            tryNextUrl();
-        }
-
-        function stopMelody() {
-            if (melodyInterval) { clearInterval(melodyInterval); melodyInterval = null; }
-            if (currentCloudAudio) { currentCloudAudio.pause(); currentCloudAudio.currentTime = 0; currentCloudAudio = null; }
-            setSpeakingIndicator(false);
-        }
-
-        function setSpeakingIndicator(isSpeaking) {
-            const wave = document.getElementById('modal-voice-wave');
-            if (wave) wave.style.opacity = isSpeaking ? '1' : '0';
-        }
-
-        function speakText(text, lang = 'bn-BD', cardId = null) {
-            stopMelody();
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            playPopSound();
-            if (cardId && customVoiceMap[cardId]) {
-                const customAudio = new Audio(customVoiceMap[cardId]);
-                currentCloudAudio = customAudio; setSpeakingIndicator(true); customAudio.onended = () => setSpeakingIndicator(false); customAudio.play().catch(() => setSpeakingIndicator(false));
-                return;
-            }
-            const cleanedText = lang.startsWith('bn') ? normalizeBanglaTextForSpeech(text) : text;
-            if (navigator.onLine) { playCloudTTSStream(cleanedText, lang, null, () => speakWithBrowserTTS(cleanedText, lang)); }
-            else { speakWithBrowserTTS(cleanedText, lang); }
-        }
-
-        function speakBilingual(enText, bnText, cardId = null) {
-            if (cardId && customVoiceMap[cardId]) { speakText(enText, 'en-US', cardId); return; }
-            stopMelody();
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            playPopSound();
-            const cleanedBn = normalizeBanglaTextForSpeech(bnText);
-            if (navigator.onLine) {
-                playCloudTTSStream(enText, 'en-US', () => { playCloudTTSStream(cleanedBn, 'bn-BD', null, () => speakWithBrowserTTS(cleanedBn, 'bn-BD')); }, () => { speakWithBrowserTTS(enText, 'en-US', () => speakWithBrowserTTS(cleanedBn, 'bn-BD')); });
-            } else { speakWithBrowserTTS(enText, 'en-US', () => speakWithBrowserTTS(cleanedBn, 'bn-BD')); }
-        }
-
-        function testPureBanglaVoice() { speakText('হ্যালো সোনামণি, আমাদের নতুন থ্রি ডি পাঠশালায় তোমাকে স্বাগতম', 'bn-BD'); }
-
-        const dbReq = indexedDB.open('SonamoniVoiceDB', 1);
-        dbReq.onupgradeneeded = (e) => { const database = e.target.result; if (!database.objectStoreNames.contains('voices')) database.createObjectStore('voices'); };
-        dbReq.onsuccess = (e) => {
-            db = e.target.result;
-            const tx = db.transaction('voices', 'readonly');
-            const req = tx.objectStore('voices').openCursor();
-            req.onsuccess = (ev) => {
-                const cursor = ev.target.result;
-                if (cursor) { customVoiceMap[cursor.key] = URL.createObjectURL(cursor.value); cursor.continue(); }
-                else { renderCurrentTab(); }
-            };
-        };
-
-        let db = null;
-
-        function saveVoiceToDB(key, blob) { if (!db) return; db.transaction('voices', 'readwrite').objectStore('voices').put(blob, key); }
-        function clearAllCustomVoices() { Object.keys(customVoiceMap).forEach(k => delete customVoiceMap[k]); if (db) db.transaction('voices', 'readwrite').objectStore('voices').clear(); playCheerfulChime(); renderCurrentTab(); }
-
-        function getAudioContext() {
-            if (!audioCtx) { const AudioContextClass = window.AudioContext || window.webkitAudioContext; audioCtx = new AudioContextClass(); }
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            return audioCtx;
-        }
-
-        function playTone(freq = 523.25, duration = 0.14, type = 'sine', delay = 0) {
-            try {
-                const ctx = getAudioContext(); const osc = ctx.createOscillator(); const gain = ctx.createGain();
-                osc.type = type; osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-                gain.gain.setValueAtTime(0.16, ctx.currentTime + delay);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
-                osc.connect(gain); gain.connect(ctx.destination); osc.start(ctx.currentTime + delay); osc.stop(ctx.currentTime + delay + duration);
-            } catch (e) {}
-        }
-
-        function playPopSound() { playTone(460, 0.08, 'triangle', 0); playTone(680, 0.11, 'sine', 0.05); }
-        function playAdventureBoingSound() { playTone(320,0.08,'sine',0); playTone(540,0.11,'triangle',0.05); playTone(820,0.14,'sine',0.11); playTone(1046,0.22,'triangle',0.17); }
-        function playCheerfulChime() { playTone(523.25,0.11,'triangle',0); playTone(659.25,0.11,'triangle',0.08); playTone(783.99,0.13,'triangle',0.16); playTone(1046.50,0.26,'sine',0.24); }
-        function playWrongSound() { playTone(300,0.16,'sawtooth',0); playTone(235,0.24,'sawtooth',0.14); }
-        function playMelodySequence(notes) { stopMelody(); let idx = 0; melodyInterval = setInterval(() => { if (idx >= notes.length) { stopMelody(); return; } playTone(notes[idx],0.25,'triangle',0); idx++; }, 300); }
-
-        function toggleParentMode() {
-            parentRecordMode = !parentRecordMode;
-            const btn = document.getElementById('parent-mode-btn'); const banner = document.getElementById('parent-banner');
-            if (parentRecordMode) { btn.className = 'toy-btn flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-rose-500 text-white border-2 border-rose-700 text-xs sm:text-sm font-bold'; banner.classList.remove('hidden'); }
-            else { btn.className = 'toy-btn flex items-center gap-1.5 px-3 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-xs sm:text-sm font-bold text-slate-700'; banner.classList.add('hidden'); if (activeRecorder && activeRecorder.state === 'recording') activeRecorder.stop(); }
-            playPopSound(); renderCurrentTab();
-        }
-
-        async function toggleRecordCardVoice(event, cardId) {
-            event.stopPropagation();
-            if (activeRecorder && activeRecorder.state === 'recording' && activeRecordingId === cardId) { activeRecorder.stop(); return; }
-            if (activeRecorder && activeRecorder.state === 'recording') activeRecorder.stop();
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const chunks = [];
-                activeRecorder = new MediaRecorder(stream); activeRecordingId = cardId;
-                activeRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
-                activeRecorder.onstop = () => { const blob = new Blob(chunks, { type: 'audio/webm' }); customVoiceMap[cardId] = URL.createObjectURL(blob); saveVoiceToDB(cardId, blob); stream.getTracks().forEach(t => t.stop()); activeRecordingId = null; playCheerfulChime(); renderCurrentTab(); };
-                activeRecorder.start(); renderCurrentTab(); setTimeout(() => { if (activeRecorder && activeRecorder.state === 'recording' && activeRecordingId === cardId) activeRecorder.stop(); }, 5000);
-            } catch (err) { document.getElementById('parent-banner').innerHTML = '<span class="text-rose-700 font-bold">⚠️ মাইক্রোফোন পারমিশন পাওয়া যায়নি। ব্রাউজারে মাইক্রোফোন Allow করুন।</span>'; }
-        }
-
-        function renderRecordButtonHTML(cardId) {
-            if (!parentRecordMode) return customVoiceMap[cardId] ? '<span class="inline-block mt-1.5 px-2.5 py-0.5 bg-rose-100 text-rose-700 rounded-full text-[11px] font-extrabold">🎙️ মা-বাবার কণ্ঠ</span>' : '';
-            const isRec = (activeRecordingId === cardId); const hasSaved = Boolean(customVoiceMap[cardId]);
-            return `
-                <div class="mt-2 pt-2 border-t border-slate-200 flex items-center justify-center">
-                    <button onclick="toggleRecordCardVoice(event, '${cardId}')" class="px-3 py-1 rounded-xl text-xs font-extrabold shadow ${isRec ? 'bg-red-600 text-white animate-pulse' : 'bg-rose-500 text-white'}">
-                        ${isRec ? '⏹️ থামান...' : (hasSaved ? '🔴 পুনরায় রেকর্ড' : '🔴 রেকর্ড করুন')}
-                    </button>
-                </div>`;
-        }
-
-        function addStar(amount = 1) { starScore += amount; localStorage.setItem('sonamoni_stars', starScore); document.getElementById('star-count').textContent = starScore; if (starScore % 5 === 0) triggerCelebration(); }
-        function triggerCelebration() { playCheerfulChime(); const container = document.getElementById('celebration-layer'); const colors = ['#f43f5e','#f59e0b','#10b981','#3b82f6','#a855f7','#ec4899']; for (let i = 0; i < 14; i++) { const el = document.createElement('div'); const c = colors[i % colors.length]; el.className = 'absolute w-10 h-12 select-none'; el.style.left = `${Math.random() * 90 + 4}%`; el.style.animation = `balloonRise ${2.2 + Math.random() * 1.6}s ease-out forwards`; el.innerHTML = `<svg viewBox="0 0 40 50" class="w-full h-full drop-shadow-lg"><ellipse cx="20" cy="20" rx="16" ry="19" fill="${c}"/><ellipse cx="14" cy="13" rx="4" ry="7" fill="#fff" opacity="0.45"/><path d="M20 39 L20 49" stroke="#64748b" stroke-width="2"/></svg>`; container.appendChild(el); setTimeout(() => el.remove(), 4000); } }
-
-        function openUnifiedModal({ badge, title, subtitle, extra, archetype, pHex, sHex, count = 1, prompt, speakFn }) {
-            const modal = document.getElementById('card-modal');
-            document.getElementById('modal-badge').textContent = badge; document.getElementById('modal-badge').style.background = `linear-gradient(135deg, ${pHex}, ${sHex})`; document.getElementById('modal-title').textContent = title; document.getElementById('modal-subtitle').textContent = subtitle; document.getElementById('modal-extra').textContent = extra;
-            document.getElementById('modal-replay-btn').onclick = speakFn;
-            modal.classList.remove('hidden'); modal.classList.add('flex');
-            setupUnified3DModalStage({ archetype, primaryHex: pHex, secondaryHex: sHex, count, promptText: prompt || `👆 ৩ডি ${title}-এ ট্যাপ করে লাফ দাও বা আঙুল দিয়ে ঘুরাও!`, feedbackText: `🎉 শাবাশ সোনামণি! তুমি ৩ডি ${title}-এর সাথে খেলছো! (+১ ⭐)`, speakFn });
-            speakFn(); addStar(1);
-        }
-
-        function closeModal(event) {
-            if (event && event.target !== document.getElementById('card-modal')) return;
-            stop3DStage(); stopMelody(); if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            const modal = document.getElementById('card-modal'); modal.classList.add('hidden'); modal.classList.remove('flex');
-        }
-
-        function createUnifiedCardElement({ badgeText, topTag, title, subtitle, pillText, archetype, pHex, sHex, count = 1, cardId, onClickFn, extraButtonsHTML = '' }) {
-            const card = document.createElement('div'); card.className = 'premium-card cursor-pointer p-3.5 flex flex-col justify-between text-center group'; card.onclick = onClickFn;
-            card.innerHTML = `
-                <div class="flex items-center justify-between gap-2 mb-2">
-                    <span class="min-w-[3.2rem] h-12 px-3 rounded-2xl text-white text-2xl sm:text-3xl font-extrabold flex items-center justify-center shadow-md border-2 border-white" style="background: linear-gradient(135deg, ${pHex}, ${sHex});">${badgeText}</span>
-                    <span class="text-xs font-extrabold px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1">${topTag} <span class="text-indigo-600">🔊</span></span>
-                </div>
-                <div class="diorama-stage py-2 px-2 my-1 flex items-center justify-center">
-                    ${renderUnified3DCardStage(archetype, pHex, sHex, badgeText, count)}
-                    <span class="absolute top-2 right-2 text-[10px] font-extrabold uppercase bg-white/85 text-indigo-700 px-2 py-0.5 rounded-full shadow-sm">3D Play</span>
-                </div>
-                <div class="mt-2">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">${title}</div>
-                    ${subtitle ? `<div class="text-xs sm:text-sm font-bold text-indigo-600 mt-0.5">${subtitle}</div>` : ''}
-                    <div class="mt-2 text-xs sm:text-sm font-extrabold text-slate-800 rounded-xl py-1.5 px-2.5 border" style="background-color: ${pHex}18; border-color: ${pHex}45;">${pillText}</div>
-                    ${extraButtonsHTML}
-                    ${cardId ? renderRecordButtonHTML(cardId) : ''}
-                </div>`;
-            return card;
-        }
-
-        function switchTab(tabName) {
-            stopMelody(); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); currentTab = tabName; playPopSound();
-            const activeStyles = { bangla: 'bg-rose-500 text-white border-rose-700', english: 'bg-sky-500 text-white border-sky-700', numbers:'bg-emerald-500 text-white border-emerald-700', sentences:'bg-purple-500 text-white border-purple-700', rhymes:'bg-amber-500 text-white border-amber-700', quiz:'bg-pink-500 text-white border-pink-700' };
-            const inactiveStyles = { bangla:'bg-rose-100 text-rose-900 border-rose-300', english:'bg-sky-100 text-sky-900 border-sky-300', numbers:'bg-emerald-100 text-emerald-900 border-emerald-300', sentences:'bg-purple-100 text-purple-900 border-purple-300', rhymes:'bg-amber-100 text-amber-900 border-amber-300', quiz:'bg-pink-100 text-pink-900 border-pink-300' };
-            Object.keys(activeStyles).forEach(k => { const btn = document.getElementById(`tab-${k}`); if (!btn) return; btn.className = `nav-tab toy-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl border-2 ${k === tabName ? activeStyles[k] + ' scale-105' : inactiveStyles[k]}`; });
-            renderCurrentTab(); window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function renderCurrentTab() {
-            const subControls = document.getElementById('sub-controls'); const contentArea = document.getElementById('content-area');
-            if (!subControls || !contentArea) return; subControls.innerHTML = ''; contentArea.innerHTML = '';
-            if (currentTab === 'bangla') renderBanglaSection(subControls, contentArea);
-            else if (currentTab === 'english') renderEnglishSection(subControls, contentArea);
-            else if (currentTab === 'numbers') renderNumbersSection(subControls, contentArea);
-            else if (currentTab === 'sentences') renderSentencesSection(subControls, contentArea);
-            else if (currentTab === 'rhymes') renderRhymesSection(subControls, contentArea);
-            else if (currentTab === 'quiz') renderQuizSection(subControls, contentArea);
-        }
-
-        function renderBanglaSection(subControls, contentArea) {
-            subControls.innerHTML = `
-                <div class="w-full flex flex-wrap items-center justify-between gap-2 bg-white/95 p-3 rounded-3xl border-2 border-indigo-100 shadow-sm">
-                    <div class="flex gap-2">
-                        <button onclick="banglaSubTab='swarabarna'; playPopSound(); renderCurrentTab();" class="toy-btn px-4 py-2 rounded-2xl font-extrabold text-sm sm:text-base border-2 ${banglaSubTab === 'swarabarna' ? 'bg-rose-500 text-white border-rose-700' : 'bg-rose-50 text-rose-800 border-rose-200'}">স্বরবর্ণ (অ - ঔ)</button>
-                        <button onclick="banglaSubTab='byanjanbarna'; playPopSound(); renderCurrentTab();" class="toy-btn px-4 py-2 rounded-2xl font-extrabold text-sm sm:text-base border-2 ${banglaSubTab === 'byanjanbarna' ? 'bg-rose-500 text-white border-rose-700' : 'bg-rose-50 text-rose-800 border-rose-200'}">ব্যঞ্জনবর্ণ (ক - হ)</button>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-indigo-700 px-2">✨ প্রতিটি কার্ডে ট্যাপ করে ৩ডি অ্যানিমেশন খেলো!</span>
-                </div>`;
-            const grid = document.createElement('div'); grid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5';
-            banglaData[banglaSubTab].forEach(item => {
-                grid.appendChild(createUnifiedCardElement({ badgeText: item.letter, topTag: item.spokenLetter, title: item.word, subtitle: `${item.letter}-তে ${item.word}`, pillText: item.sentence, archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, cardId: item.id, onClickFn: () => openUnifiedModal({ badge: item.letter, title: item.word, subtitle: item.spokenLetter, extra: item.sentence, archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, prompt: item.prompt, speakFn: () => speakText(item.spokenSentence, 'bn-BD', item.id) }) }));
-            });
-            contentArea.appendChild(grid);
-        }
-
-        function renderEnglishSection(subControls, contentArea) {
-            subControls.innerHTML = `
-                <div class="w-full flex items-center justify-between bg-white/95 p-3 rounded-3xl border-2 border-indigo-100 shadow-sm">
-                    <h2 class="text-base sm:text-xl font-extrabold text-sky-900 px-2">🔤 English Alphabets (A to Z) — 3D Interactive</h2>
-                    <span class="text-xs sm:text-sm font-extrabold text-sky-600 px-2">ইংরেজি ও শুদ্ধ বাংলা উচ্চারণ 🔊</span>
-                </div>`;
-            const grid = document.createElement('div'); grid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5';
-            englishData.forEach(item => {
-                grid.appendChild(createUnifiedCardElement({ badgeText: item.letter, topTag: 'Phonics', title: item.word, subtitle: `বাংলা অর্থ: ${item.bnMeaning}`, pillText: `${item.speech} (${item.bnMeaning})`, archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, cardId: item.id, onClickFn: () => openUnifiedModal({ badge: item.letter, title: `${item.word} (${item.bnMeaning})`, subtitle: 'English & বাংলা উচ্চারণ', extra: `${item.speech} — ${item.bnSpeech}`, archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, speakFn: () => speakBilingual(item.speech, `${item.word}, ${item.bnSpeech}`, item.id) }) }));
-            });
-            contentArea.appendChild(grid);
-        }
-
-        function renderNumbersSection(subControls, contentArea) {
-            subControls.innerHTML = `
-                <div class="w-full flex flex-wrap items-center justify-between gap-2 bg-white/95 p-3 rounded-3xl border-2 border-indigo-100 shadow-sm">
-                    <div class="flex gap-2">
-                        <button onclick="numberLangMode='both'; playPopSound(); renderCurrentTab();" class="toy-btn px-3.5 py-2 rounded-2xl font-extrabold text-xs sm:text-sm border-2 ${numberLangMode === 'both' ? 'bg-emerald-500 text-white border-emerald-700' : 'bg-emerald-50 text-emerald-900 border-emerald-200'}">বাংলা + English</button>
-                        <button onclick="numberLangMode='bn'; playPopSound(); renderCurrentTab();" class="toy-btn px-3.5 py-2 rounded-2xl font-extrabold text-xs sm:text-sm border-2 ${numberLangMode === 'bn' ? 'bg-emerald-500 text-white border-emerald-700' : 'bg-emerald-50 text-emerald-900 border-emerald-200'}">শুধু বাংলা (১-১০)</button>
-                        <button onclick="numberLangMode='en'; playPopSound(); renderCurrentTab();" class="toy-btn px-3.5 py-2 rounded-2xl font-extrabold text-xs sm:text-sm border-2 ${numberLangMode === 'en' ? 'bg-emerald-500 text-white border-emerald-700' : 'bg-emerald-50 text-emerald-900 border-emerald-200'}">Only English (1-10)</button>
-                    </div>
-                    <span class="text-xs sm:text-sm font-extrabold text-emerald-700 px-2">✨ ৩ডি খেলনা গুনে গুনে সংখ্যা শিখি!</span>
-                </div>`;
-            const grid = document.createElement('div'); grid.className = 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5';
-            numbersData.forEach(item => {
-                const badge = numberLangMode === 'en' ? item.enDigit : (numberLangMode === 'bn' ? item.bnDigit : `${item.bnDigit}/${item.enDigit}`);
-                const title = numberLangMode === 'en' ? item.enWord : (numberLangMode === 'bn' ? item.bnWord : `${item.bnWord} • ${item.enWord}`);
-                const pill = numberLangMode === 'en' ? item.itemEn : (numberLangMode === 'bn' ? item.itemBn : `${item.itemBn} (${item.itemEn})`);
-                grid.appendChild(createUnifiedCardElement({ badgeText: badge, topTag: `${item.count}টি 3D`, title, subtitle: `গণনা: ${item.bnDigit} থেকে ১০`, pillText: pill, archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, count: item.count, cardId: item.id, onClickFn: () => openUnifiedModal({ badge, title, subtitle: pill, extra: `${item.spokenBn} • ${item.spokenEn}`, archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, count: item.count, prompt: `👆 এখানে ${item.bnDigit}টি ৩ডি খেলনা আছে! ট্যাপ করে গুনে দেখো!`, speakFn: () => { if (numberLangMode === 'en') speakText(item.spokenEn, 'en-US', item.id); else if (numberLangMode === 'bn') speakText(item.spokenBn, 'bn-BD', item.id); else speakBilingual(item.spokenEn, item.spokenBn, item.id); } }) }));
-            });
-            contentArea.appendChild(grid);
-        }
-
-        function renderSentencesSection(subControls, contentArea) {
-            subControls.innerHTML = `
-                <div class="w-full flex items-center justify-between bg-white/95 p-3 rounded-3xl border-2 border-indigo-100 shadow-sm">
-                    <h2 class="text-base sm:text-xl font-extrabold text-purple-900 px-2">🗣️ প্রতিদিনের ছোট বাক্য (3D Interactive Daily Sentences)</h2>
-                    <span class="text-xs sm:text-sm font-extrabold text-purple-600 px-2">কার্ডে ট্যাপ করে ৩ডি অ্যানিমেশন ও কথা শোনো!</span>
-                </div>`;
-            const grid = document.createElement('div'); grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5';
-            sentencesData.forEach(item => {
-                const dualButtons = `
-                    <div class="mt-2.5 grid grid-cols-2 gap-2">
-                        <button onclick="event.stopPropagation(); speakText('${item.bn.replace(/'/g, "\\'")}', 'bn-BD', '${item.id}'); addStar(1);" class="toy-btn py-2 px-2 rounded-xl bg-rose-500 text-white font-extrabold text-xs sm:text-sm border-2 border-rose-700">🔊 বাংলা বলো</button>
-                        <button onclick="event.stopPropagation(); speakText('${item.en.replace(/'/g, "\\'")}', 'en-US', '${item.id}'); addStar(1);" class="toy-btn font-eng py-2 px-2 rounded-xl bg-sky-500 text-white font-extrabold text-xs sm:text-sm border-2 border-sky-700">🔊 English</button>
-                    </div>`;
-                grid.appendChild(createUnifiedCardElement({ badgeText: item.badge, topTag: 'ছোট বাক্য', title: item.bn, subtitle: item.en, pillText: 'ট্যাপ করে ৩ডি চরিত্রের সাথে কথা বলো!', archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, cardId: item.id, extraButtonsHTML: dualButtons, onClickFn: () => openUnifiedModal({ badge: item.badge, title: item.bn, subtitle: item.en, extra: `${item.bn} — ${item.en}`, archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, speakFn: () => speakBilingual(item.en, item.bn, item.id) }) }));
-            });
-            contentArea.appendChild(grid);
-        }
-
-        function renderRhymesSection(subControls, contentArea) {
-            subControls.innerHTML = `
-                <div class="w-full flex items-center justify-between bg-white/95 p-3 rounded-3xl border-2 border-indigo-100 shadow-sm">
-                    <h2 class="text-base sm:text-xl font-extrabold text-amber-900 px-2">🎵 বাংলা ও English ছড়া (3D Animated Rhymes)</h2>
-                    <button onclick="stopMelody(); if('speechSynthesis' in window) window.speechSynthesis.cancel();" class="toy-btn px-3.5 py-1.5 rounded-xl bg-rose-500 text-white text-xs font-extrabold border-2 border-rose-700">⏹️ বাজনা থামান</button>
-                </div>`;
-            const grid = document.createElement('div'); grid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5';
-            rhymesData.forEach((rhyme) => {
-                const linesPreview = rhyme.lines.join(' • ');
-                const rhymeButtons = `
-                    <div class="mt-3 grid grid-cols-2 gap-2">
-                        <button onclick="event.stopPropagation(); playRhymeIn3DModal('${rhyme.id}', false);" class="toy-btn py-2.5 px-3 rounded-xl bg-emerald-500 text-white font-extrabold text-xs sm:text-sm border-2 border-emerald-700">🗣️ ৩ডি ছড়া শুনুন</button>
-                        <button onclick="event.stopPropagation(); playRhymeIn3DModal('${rhyme.id}', true);" class="toy-btn py-2.5 px-3 rounded-xl bg-amber-500 text-white font-extrabold text-xs sm:text-sm border-2 border-amber-700">🎹 ৩ডি বাজনা</button>
-                    </div>`;
-                grid.appendChild(createUnifiedCardElement({ badgeText: rhyme.lang === 'bn' ? 'ছড়া' : 'Song', topTag: rhyme.lang === 'bn' ? 'বাংলা কবিতা' : 'English Rhyme', title: rhyme.title, subtitle: rhyme.lines[0], pillText: linesPreview, archetype: rhyme.archetype, pHex: rhyme.pHex, sHex: rhyme.sHex, cardId: rhyme.id, extraButtonsHTML: rhymeButtons, onClickFn: () => playRhymeIn3DModal(rhyme.id, false) }));
-            });
-            contentArea.appendChild(grid);
-        }
-
-        function playRhymeIn3DModal(rhymeId, playMelodyOnly = false) {
-            const rhyme = rhymesData.find(r => r.id === rhymeId); if (!rhyme) return;
-            const fullSpeech = `${rhyme.title}, ` + rhyme.lines.join(', ');
-            openUnifiedModal({ badge: '🎵', title: rhyme.title, subtitle: rhyme.lang === 'bn' ? 'বাংলা ছড়া ও কবিতা' : 'English Nursery Rhyme', extra: rhyme.lines.join(' / '), archetype: rhyme.archetype, pHex: rhyme.pHex, sHex: rhyme.sHex, prompt: '🎶 ৩ডি চরিত্রটিতে ট্যাপ করো আর ছড়ার তালে নাচো!', speakFn: () => { if (playMelodyOnly) playMelodySequence(rhyme.melody); else speakText(fullSpeech, rhyme.lang === 'bn' ? 'bn-BD' : 'en-US', rhyme.id); } });
-        }
-
-        function renderQuizSection(subControls, contentArea) {
-            const shuffled = [...quizPool].sort(() => 0.5 - Math.random()); const choices = shuffled.slice(0, 3); currentQuizAnswer = choices[Math.floor(Math.random() * choices.length)];
-            subControls.innerHTML = `
-                <div class="w-full flex items-center justify-between bg-white/95 p-3 rounded-3xl border-2 border-indigo-100 shadow-sm">
-                    <h2 class="text-base sm:text-xl font-extrabold text-pink-900 px-2">🎮 ৩ডি ছবি দেখে খুঁজে বের করো! (3D Quiz Game)</h2>
-                    <button onclick="renderQuizSection(document.getElementById('sub-controls'), document.getElementById('content-area'))" class="toy-btn px-4 py-1.5 rounded-2xl bg-pink-500 text-white font-extrabold text-xs sm:text-sm border-2 border-pink-700">🔄 নতুন প্রশ্ন</button>
-                </div>`;
-            const wrapper = document.createElement('div'); wrapper.className = 'premium-card p-5 sm:p-7 text-center';
-            wrapper.innerHTML = `
-                <p class="text-xs sm:text-sm font-extrabold text-pink-600 uppercase tracking-wider">সোনামণি বলো তো...</p>
-                <h3 class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-1">কোনটি <span class="text-rose-600 underline decoration-wavy">${currentQuizAnswer.nameBn} (${currentQuizAnswer.nameEn})</span>?</h3>
-                <button onclick="speakQuizPrompt()" class="toy-btn mt-3 inline-flex items-center gap-2 px-5 py-2 rounded-2xl bg-amber-400 text-amber-950 font-extrabold text-sm sm:text-base border-2 border-amber-600">🔊 প্রশ্নটি আবার শোনো</button>
-                <div id="quiz-feedback" class="h-9 mt-2 text-lg sm:text-xl font-extrabold text-emerald-600 flex items-center justify-center"></div>
-                <div id="quiz-choices-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-3"></div>`;
-            contentArea.appendChild(wrapper);
-            const choicesGrid = wrapper.querySelector('#quiz-choices-grid');
-            choices.forEach((item, index) => {
-                const choiceCard = createUnifiedCardElement({ badgeText: ['ক','খ','গ'][index], topTag: 'বেছে নাও', title: item.nameBn, subtitle: item.nameEn, pillText: 'এখানে ট্যাপ করো!', archetype: item.archetype, pHex: item.pHex, sHex: item.sHex, onClickFn: () => checkQuizChoice(item, choiceCard) });
-                choicesGrid.appendChild(choiceCard);
-            });
-            setTimeout(() => speakQuizPrompt(), 250);
-        }
-
-        function speakQuizPrompt() { if (!currentQuizAnswer) return; speakText(`সোনামণি বলো তো, এখানে কোনটি ${currentQuizAnswer.nameBn}?`, 'bn-BD'); }
-        function checkQuizChoice(selectedItem, cardEl) {
-            const feedback = document.getElementById('quiz-feedback');
-            if (selectedItem.id === currentQuizAnswer.id) {
-                cardEl.style.borderColor = '#22c55e'; feedback.innerHTML = '🎉 শাবাশ সোনামণি! সঠিক উত্তর! (+২ ⭐)'; triggerCelebration(); addStar(2); openUnifiedModal({ badge: '🏆', title: `${selectedItem.nameBn} (${selectedItem.nameEn})`, subtitle: 'সঠিক উত্তর! শাবাশ সোনামণি!', extra: `তুমি একদম ঠিক চিনেছো, এটি ${selectedItem.nameBn}!`, archetype: selectedItem.archetype, pHex: selectedItem.pHex, sHex: selectedItem.sHex, speakFn: () => speakText(`শাবাশ সোনামণি, সঠিক উত্তর, এটি ${selectedItem.nameBn}`, 'bn-BD') });
-            } else {
-                cardEl.classList.add('opacity-50'); playWrongSound(); feedback.innerHTML = '<span class="text-rose-600">আবার চেষ্টা করো সোনামণি! 😊</span>'; speakText('হয়নি সোনামণি, আবার চেষ্টা করো', 'bn-BD');
-            }
-        }
-
-        window.onload = function () { document.getElementById('star-count').textContent = starScore; renderCurrentTab(); };
-    </script>
+      }
+    });
+
+    renderCardGrid();
+    renderPronounceBox();
+    setActiveLesson(0);
+
+    if ('speechSynthesis' in window) {
+      speechSynthesis.onvoiceschanged = () => {
+        setTimeout(() => speakText(activeLesson.sound), 200);
+      };
+    }
+  </script>
 </body>
 </html>
